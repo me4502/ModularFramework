@@ -19,30 +19,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.me4502.ModularFramework;
+package com.me4502.ModularFramework.module;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * The base class of the Modular Framework.
+ * Marks a class as a Module. Any class that is a module is capable of being loaded with this framework.
  */
-public class ModularFramework {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Module {
 
-    /**
-     * Internal list of Module Controllers.
-     */
-    private static List<ModuleController> controllerList = new ArrayList<ModuleController>();
+    String moduleName();
 
-    /**
-     * Register a new Module Controller.
-     *
-     * @param plugin The plugin object to register with.
-     * @return The newly registered ModuleController.
-     */
-    public static ModuleController registerModuleController(Object plugin) {
-        ModuleController controller =  new ModuleController(plugin);
-        controllerList.add(controller);
-        return controller;
-    }
+    boolean eventListener() default true;
 }

@@ -19,30 +19,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.me4502.ModularFramework;
+package com.me4502.ModularFramework.module;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.me4502.ModularFramework.ModuleController;
+import com.me4502.ModularFramework.exception.ModuleNotInstantiatedException;
 
 /**
- * The base class of the Modular Framework.
+ * Wraps a {@link Module} in a tangible object.
  */
-public class ModularFramework {
+public class ModuleWrapper {
 
-    /**
-     * Internal list of Module Controllers.
-     */
-    private static List<ModuleController> controllerList = new ArrayList<ModuleController>();
+    ModuleController owner;
+    Class<?> moduleClass;
+    Object module;
 
-    /**
-     * Register a new Module Controller.
-     *
-     * @param plugin The plugin object to register with.
-     * @return The newly registered ModuleController.
-     */
-    public static ModuleController registerModuleController(Object plugin) {
-        ModuleController controller =  new ModuleController(plugin);
-        controllerList.add(controller);
-        return controller;
+    public ModuleWrapper(ModuleController owner, Class moduleClass) {
+        this.owner = owner;
+        this.moduleClass = moduleClass;
+    }
+
+    public void enableModule() throws IllegalAccessException, InstantiationException {
+        this.module = moduleClass.newInstance();
+    }
+
+    public ModuleController getOwner() {
+        return this.owner;
+    }
+
+    public Object getModule() throws ModuleNotInstantiatedException {
+        if(this.module == null)
+            throw new ModuleNotInstantiatedException();
+        return this.module;
     }
 }
