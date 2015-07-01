@@ -33,7 +33,15 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Module {
 
+    /**
+     * The name of this module.
+     * @return The name of this module
+     */
     String moduleName();
 
+    /**
+     * Whether the module requires an event listener registration.
+     * @return If the module listens to events
+     */
     boolean eventListener() default true;
 }
