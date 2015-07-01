@@ -51,4 +51,13 @@ public class ModuleWrapper {
             throw new ModuleNotInstantiatedException();
         return this.module;
     }
+
+    //Cache the annotation. I have no idea what the performance overhead for not doing this is, but meh.
+    private Module annotation;
+
+    public String getName() {
+        if(annotation == null)
+            annotation = moduleClass.getAnnotation(Module.class);
+        return annotation.moduleName();
+    }
 }
