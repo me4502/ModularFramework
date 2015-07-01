@@ -19,14 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.me4502.ModularFramework;
+package com.me4502.ModularFramework.exception;
 
-/**
- * Marks a class as a Module. Any class that is a module is capable of being loaded with this framework.
- */
-public @interface Module {
-
-    String moduleName();
-
-    boolean eventListener() default true;
+public class ModuleNotInstantiatedException extends Exception {
 }

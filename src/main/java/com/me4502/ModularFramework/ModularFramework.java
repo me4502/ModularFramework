@@ -21,6 +21,28 @@
  */
 package com.me4502.ModularFramework;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * The base class of the Modular Framework.
+ */
 public class ModularFramework {
 
+    /**
+     * Internal list of Module Controllers.
+     */
+    private static List<ModuleController> controllerList = new ArrayList<ModuleController>();
+
+    /**
+     * Register a new Module Controller.
+     *
+     * @param plugin The plugin object to register with.
+     * @return The newly registered ModuleController.
+     */
+    public static ModuleController registerModuleController(Object plugin) {
+        ModuleController controller =  new ModuleController(plugin);
+        controllerList.add(controller);
+        return controller;
+    }
 }
