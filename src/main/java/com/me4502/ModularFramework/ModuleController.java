@@ -21,12 +21,14 @@
  */
 package com.me4502.ModularFramework;
 
+import com.google.common.base.Predicate;
 import com.me4502.ModularFramework.module.Module;
 import com.me4502.ModularFramework.module.ModuleWrapper;
+import org.spongepowered.api.Game;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Predicate;
 
 /**
  * A per-plugin class for managing registered modules.
@@ -34,6 +36,7 @@ import java.util.function.Predicate;
 public class ModuleController {
 
     Object plugin;
+    Game game;
 
     private Set<ModuleWrapper> moduleSet = new HashSet<ModuleWrapper>();
 
@@ -42,8 +45,17 @@ public class ModuleController {
      *
      * @param plugin The plugin instance.
      */
-    ModuleController(Object plugin) {
-            this.plugin = plugin;
+    ModuleController(Object plugin, Game game) {
+        this.plugin = plugin;
+        this.game = game;
+    }
+
+    public Object getPlugin() {
+        return plugin;
+    }
+
+    public Game getGame() {
+        return game;
     }
 
     /**
@@ -58,11 +70,11 @@ public class ModuleController {
     }
 
     /**
-     * Gets a set of all registered modules in this controller.
+     * Gets an immutable set of all registered modules in this controller.
      * @return A set of registered modules
      */
     public Set<ModuleWrapper> getModules() {
-        return new HashSet<ModuleWrapper>(moduleSet); //TODO Make immutable when I have internet
+        return Collections.unmodifiableSet(moduleSet);
     }
 
     /**
@@ -84,9 +96,9 @@ public class ModuleController {
      * Enable registered modules if they pass a supplied predicate.
      * @param modulePredicate The predicate to test if a module is enabled
      */
-    public void enableModules(Predicate<ModuleWrapper> modulePredicate) { //TODO Don't use JDK Predicate
+    public void enableModules(Predicate<ModuleWrapper> modulePredicate) {
         for(ModuleWrapper wrapper : moduleSet) {
-            if (modulePredicate.test(wrapper)) {
+            if (modulePredicate.apply(wrapper)) {
                 try {
                     wrapper.enableModule();
                 } catch (IllegalAccessException e) {
