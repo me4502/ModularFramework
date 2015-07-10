@@ -30,16 +30,34 @@ import com.me4502.ModularFramework.exception.ModuleNotInstantiatedException;
 public class ModuleWrapper {
 
     ModuleController owner;
+
+    String moduleClassName;
     Class<?> moduleClass;
     Object module;
 
+    public ModuleWrapper(ModuleController owner, String moduleClassName) {
+        this.owner = owner;
+        this.moduleClassName = moduleClassName;
+    }
+
+    @Deprecated
     public ModuleWrapper(ModuleController owner, Class moduleClass) {
         this.owner = owner;
+        this.moduleClassName = moduleClass.getName();
         this.moduleClass = moduleClass;
     }
 
-    public void enableModule() throws IllegalAccessException, InstantiationException {
-        this.module = moduleClass.newInstance();
+    private Class<?> getModuleClass() throws ClassNotFoundException {
+        if(moduleClass == null) {
+            moduleClass = Class.forName(moduleClassName);
+            if(!moduleClass.isAnnotationPresent(Module.class))
+                throw new IllegalArgumentException("Module " + moduleClassName + " is not a module!");
+        }
+        return moduleClass;
+    }
+
+    public void enableModule() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+        this.module = getModuleClass().newInstance();
         if(getAnnotation().eventListener())
             owner.getGame().getEventManager().register(owner.getPlugin(), module);
     }
@@ -58,12 +76,18 @@ public class ModuleWrapper {
     private Module annotation;
 
     public String getName() {
-        return getAnnotation().moduleName();
+        try {
+            return getAnnotation().moduleName();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return moduleClassName;
     }
 
-    public Module getAnnotation() {
+    public Module getAnnotation() throws ClassNotFoundException {
         if(annotation == null)
-            annotation = moduleClass.getAnnotation(Module.class);
+            annotation = getModuleClass().getAnnotation(Module.class);
         return annotation;
     }
 }
