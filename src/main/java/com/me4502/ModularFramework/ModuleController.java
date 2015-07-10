@@ -62,11 +62,20 @@ public class ModuleController {
      * Register a class to be a module.
      * @param clazz The class containing the module.
      */
+    @Deprecated
     public void registerModule(Class<?> clazz) {
         if(!clazz.isAnnotationPresent(Module.class))
             throw new IllegalArgumentException("Passed class is not a Module!");
 
         moduleSet.add(new ModuleWrapper(this, clazz));
+    }
+
+    /**
+     * Register a class to be a module.
+     * @param className The name of the class to use.
+     */
+    public void registerModule(String className) {
+        moduleSet.add(new ModuleWrapper(this, className));
     }
 
     /**
@@ -88,6 +97,8 @@ public class ModuleController {
                 e.printStackTrace();
             } catch (InstantiationException e) {
                 e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -104,6 +115,8 @@ public class ModuleController {
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }
