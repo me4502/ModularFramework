@@ -40,6 +40,8 @@ public class ModuleWrapper {
 
     public void enableModule() throws IllegalAccessException, InstantiationException {
         this.module = moduleClass.newInstance();
+        if(getAnnotation().eventListener())
+            owner.getGame().getEventManager().register(owner.getPlugin(), module);
     }
 
     public ModuleController getOwner() {
@@ -56,8 +58,12 @@ public class ModuleWrapper {
     private Module annotation;
 
     public String getName() {
+        return getAnnotation().moduleName();
+    }
+
+    public Module getAnnotation() {
         if(annotation == null)
             annotation = moduleClass.getAnnotation(Module.class);
-        return annotation.moduleName();
+        return annotation;
     }
 }
