@@ -1,4 +1,4 @@
-ModularFramework [![Build Status](https://travis-ci.org/Me4502/ModularFramework.svg?branch=master)](https://travis-ci.org/Me4502/ModularFramework)
+ModularFramework [![Build Status](https://travis-ci.org/me4502/ModularFramework.svg?branch=master)](https://travis-ci.org/me4502/ModularFramework)
 =============
 A modular plugin framework built for Sponge.
 ## Features
