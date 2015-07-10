@@ -21,27 +21,30 @@
  */
 package com.me4502.ModularFramework;
 
+import org.spongepowered.api.Game;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The base class of the Modular Framework.
+ * The base class of the Modular Framework. If this library is shaded into your plugin, use {@link ShadedModularFramework}.
  */
 public class ModularFramework {
 
     /**
      * Internal list of Module Controllers.
      */
-    private static List<ModuleController> controllerList = new ArrayList<ModuleController>();
+    protected static List<ModuleController> controllerList = new ArrayList<ModuleController>();
 
     /**
      * Register a new Module Controller.
      *
      * @param plugin The plugin object to register with.
+     * @param game The game.
      * @return The newly registered ModuleController.
      */
-    public static ModuleController registerModuleController(Object plugin) {
-        ModuleController controller =  new ModuleController(plugin);
+    public static ModuleController registerModuleController(Object plugin, Game game) {
+        ModuleController controller =  new ModuleController(plugin, game);
         controllerList.add(controller);
         return controller;
     }
