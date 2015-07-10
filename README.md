@@ -3,7 +3,7 @@ ModularFramework [![Build Status](https://travis-ci.org/me4502/ModularFramework.
 A modular plugin framework built for Sponge.
 ## Features
 * Lightweight and small module framework.
-* Lazy-loading of classes, unused modules are not loaded.
+* Lazy-loading of classes, unused modules are not loaded.Ow
 
 ## Prerequisites
 * [Java] 6
