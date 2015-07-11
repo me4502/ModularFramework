@@ -25,8 +25,8 @@ public class ShadedModularFramework {
     public static ModuleController registerModuleController(Object plugin, Game game) {
         //If a real copy is installed, use that over this one.
         try {
-            Class.forName("com.me4502.ModularFramework.ModularFramework");
-            return com.me4502.ModularFramework.ModularFramework.registerModuleController(plugin, game);
+            Class clazz = Class.forName("com.me4502.ModularFramework.ModularFramework");
+            return (ModuleController) clazz.getMethod("registerModuleController").invoke(null, plugin, game);
         } catch(Throwable t) {
         }
 
