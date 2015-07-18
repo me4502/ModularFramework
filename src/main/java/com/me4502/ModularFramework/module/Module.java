@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.me4502.ModularFramework.module;
+package com.me4502.modularframework.module;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

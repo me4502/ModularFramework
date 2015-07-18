@@ -1,4 +1,4 @@
-package com.me4502.ModularFramework;
+package com.me4502.modularframework;
 
 import org.spongepowered.api.Game;
 
@@ -25,7 +25,7 @@ public class ShadedModularFramework {
     public static ModuleController registerModuleController(Object plugin, Game game) {
         //If a real copy is installed, use that over this one.
         try {
-            Class clazz = Class.forName("com.me4502.ModularFramework.ModularFramework");
+            Class clazz = Class.forName("com.me4502.modularframework.ModularFramework");
             return (ModuleController) clazz.getMethod("registerModuleController").invoke(null, plugin, game);
         } catch(Throwable t) {
         }

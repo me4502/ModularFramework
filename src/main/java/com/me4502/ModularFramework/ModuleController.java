@@ -19,11 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.me4502.ModularFramework;
+package com.me4502.modularframework;
 
 import com.google.common.base.Predicate;
-import com.me4502.ModularFramework.module.Module;
-import com.me4502.ModularFramework.module.ModuleWrapper;
+import com.me4502.modularframework.module.Module;
+import com.me4502.modularframework.module.ModuleWrapper;
 import org.spongepowered.api.Game;
 
 import java.util.Collections;

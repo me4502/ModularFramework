@@ -19,10 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.me4502.ModularFramework.module;
+package com.me4502.modularframework.module;
 
-import com.me4502.ModularFramework.ModuleController;
-import com.me4502.ModularFramework.exception.ModuleNotInstantiatedException;
+import com.me4502.modularframework.ModuleController;
+import com.me4502.modularframework.exception.ModuleNotInstantiatedException;
 
 /**
  * Wraps a {@link Module} in a tangible object.
