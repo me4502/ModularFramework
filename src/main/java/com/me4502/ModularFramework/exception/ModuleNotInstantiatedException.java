@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.me4502.ModularFramework.exception;
+package com.me4502.modularframework.exception;
 
 public class ModuleNotInstantiatedException extends Exception {
 }
