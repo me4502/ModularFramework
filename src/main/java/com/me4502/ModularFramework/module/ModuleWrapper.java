@@ -21,8 +21,15 @@
  */
 package com.me4502.modularframework.module;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.me4502.modularframework.ModuleController;
 import com.me4502.modularframework.exception.ModuleNotInstantiatedException;
+import com.me4502.modularframework.module.guice.ModuleInjector;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Wraps a {@link Module} in a tangible object.
@@ -56,10 +63,17 @@ public class ModuleWrapper {
         return moduleClass;
     }
 
-    public void enableModule() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        this.module = getModuleClass().newInstance();
+    public void enableModule() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IOException {
+        Injector injector = Guice.createInjector(new ModuleInjector(this));
+        this.module = injector.getInstance(getModuleClass());
+
         if(getAnnotation().eventListener())
             owner.getGame().getEventManager().register(owner.getPlugin(), module);
+
+        if(!getAnnotation().onEnable().equals("")) {
+            Method meth = module.getClass().getMethod(getAnnotation().onEnable());
+            meth.invoke(module, null);
+        }
     }
 
     public ModuleController getOwner() {

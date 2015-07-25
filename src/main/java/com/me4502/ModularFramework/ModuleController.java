@@ -26,6 +26,9 @@ import com.me4502.modularframework.module.Module;
 import com.me4502.modularframework.module.ModuleWrapper;
 import org.spongepowered.api.Game;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,6 +41,8 @@ public class ModuleController {
     Object plugin;
     Game game;
 
+    File configurationDirectory;
+
     private Set<ModuleWrapper> moduleSet = new HashSet<ModuleWrapper>();
 
     /**
@@ -48,6 +53,14 @@ public class ModuleController {
     ModuleController(Object plugin, Game game) {
         this.plugin = plugin;
         this.game = game;
+    }
+
+    public void setConfigurationDirectory(File configurationDirectory) {
+        this.configurationDirectory = configurationDirectory;
+    }
+
+    public File getConfigurationDirectory() {
+        return this.configurationDirectory;
     }
 
     public Object getPlugin() {
@@ -99,6 +112,12 @@ public class ModuleController {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -117,6 +136,12 @@ public class ModuleController {
                 } catch (InstantiationException e) {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
