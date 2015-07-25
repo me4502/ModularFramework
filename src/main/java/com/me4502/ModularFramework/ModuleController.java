@@ -147,4 +147,53 @@ public class ModuleController {
             }
         }
     }
+
+    /**
+     * Disable all registered modules in this controller.
+     */
+    public void disableModules() {
+        for(ModuleWrapper wrapper : moduleSet) {
+            if(wrapper.isEnabled()) {
+                try {
+                    wrapper.disableModule();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * Disable registered modules if they pass a supplied predicate.
+     * @param modulePredicate The predicate to test if a module is disabled
+     */
+    public void disableModules(Predicate<ModuleWrapper> modulePredicate) {
+        for(ModuleWrapper wrapper : moduleSet) {
+            if(wrapper.isEnabled()) {
+                if (modulePredicate.apply(wrapper)) {
+                    try {
+                        wrapper.disableModule();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
 }
