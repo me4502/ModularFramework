@@ -25,9 +25,16 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.me4502.modularframework.ModuleController;
 import com.me4502.modularframework.exception.ModuleNotInstantiatedException;
+import com.me4502.modularframework.module.guice.ModuleConfiguration;
 import com.me4502.modularframework.module.guice.ModuleInjector;
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -41,6 +48,8 @@ public class ModuleWrapper {
     String moduleClassName;
     Class<?> moduleClass;
     Object module;
+
+    private boolean enabled = false;
 
     public ModuleWrapper(ModuleController owner, String moduleClassName) {
         this.owner = owner;
@@ -63,6 +72,10 @@ public class ModuleWrapper {
         return moduleClass;
     }
 
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
     public void enableModule() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IOException {
         Injector injector = Guice.createInjector(new ModuleInjector(this));
         this.module = injector.getInstance(getModuleClass());
@@ -74,6 +87,27 @@ public class ModuleWrapper {
             Method meth = module.getClass().getMethod(getAnnotation().onEnable());
             meth.invoke(module, null);
         }
+
+        enabled = true;
+    }
+
+    public void disableModule() throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, IOException {
+
+        if(!getAnnotation().onDisable().equals("")) {
+            Method meth = module.getClass().getMethod(getAnnotation().onDisable());
+            meth.invoke(module, null);
+        }
+
+        for(Field field : module.getClass().getFields()) {
+            if(field.isAnnotationPresent(ModuleConfiguration.class)) {
+                File config = new File(getOwner().getConfigurationDirectory(), getAnnotation().moduleName());
+                ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setFile(config).build();
+                configLoader.save((ConfigurationNode) field.get(module));
+            }
+        }
+
+        module = null;
+        enabled = false;
     }
 
     public ModuleController getOwner() {
