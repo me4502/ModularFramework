@@ -2,6 +2,7 @@ package com.me4502.modularframework;
 
 import org.spongepowered.api.Game;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,13 @@ public class ShadedModularFramework {
         try {
             Class clazz = Class.forName("com.me4502.modularframework.ModularFramework");
             return (ModuleController) clazz.getMethod("registerModuleController").invoke(null, plugin, game);
-        } catch(Throwable t) {
+        } catch(ClassNotFoundException e) {
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
 
         ModuleController controller =  new ModuleController(plugin, game);
