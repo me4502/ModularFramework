@@ -44,4 +44,16 @@ public @interface Module {
      * @return If the module listens to events
      */
     boolean eventListener() default true;
+
+    /**
+     * The name of a method called when this module is enabled.
+     * @return The method to call when enabled.
+     */
+    String onEnable() default "";
+
+    /**
+     * The name of a method called when this module is disabled.
+     * @return The method to call when disabled.
+     */
+    String onDisable() default "";
 }
