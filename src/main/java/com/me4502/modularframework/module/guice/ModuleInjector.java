@@ -32,7 +32,7 @@ public class ModuleInjector extends AbstractModule {
 
             if(moduleWrapper.getOwner().getConfigurationDirectory() != null) {
                 try {
-                    File config = new File(moduleWrapper.getOwner().getConfigurationDirectory(), moduleWrapper.getAnnotation().moduleName());
+                    File config = new File(moduleWrapper.getOwner().getConfigurationDirectory(), moduleWrapper.getAnnotation().moduleName() + ".conf");
                     ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setFile(config).build();
                     configNode = configLoader.load();
                 } catch (ClassNotFoundException e) {

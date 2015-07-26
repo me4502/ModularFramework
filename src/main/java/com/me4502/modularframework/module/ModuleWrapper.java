@@ -88,6 +88,14 @@ public class ModuleWrapper {
             meth.invoke(module, null);
         }
 
+        for(Field field : module.getClass().getFields()) {
+            if(field.isAnnotationPresent(ModuleConfiguration.class)) {
+                File config = new File(getOwner().getConfigurationDirectory(), getAnnotation().moduleName() + ".conf");
+                ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setFile(config).build();
+                configLoader.save((ConfigurationNode) field.get(module));
+            }
+        }
+
         enabled = true;
     }
 
@@ -100,7 +108,7 @@ public class ModuleWrapper {
 
         for(Field field : module.getClass().getFields()) {
             if(field.isAnnotationPresent(ModuleConfiguration.class)) {
-                File config = new File(getOwner().getConfigurationDirectory(), getAnnotation().moduleName());
+                File config = new File(getOwner().getConfigurationDirectory(), getAnnotation().moduleName() + ".conf");
                 ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setFile(config).build();
                 configLoader.save((ConfigurationNode) field.get(module));
             }
