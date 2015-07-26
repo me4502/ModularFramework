@@ -29,9 +29,8 @@ public class ShadedModularFramework {
             Class clazz = Class.forName("com.me4502.modularframework.ModularFramework");
             return (ModuleController) clazz.getMethod("registerModuleController").invoke(null, plugin, game);
         } catch(ClassNotFoundException e) {
+        } catch(NoSuchMethodException e) {
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
