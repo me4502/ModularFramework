@@ -88,13 +88,7 @@ public class ModuleWrapper {
             meth.invoke(module, null);
         }
 
-        for(Field field : module.getClass().getFields()) {
-            if(field.isAnnotationPresent(ModuleConfiguration.class)) {
-                File config = new File(getOwner().getConfigurationDirectory(), getAnnotation().moduleName() + ".conf");
-                ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setFile(config).build();
-                configLoader.save((ConfigurationNode) field.get(module));
-            }
-        }
+        loadAndSaveConfiguration();
 
         enabled = true;
     }
@@ -106,6 +100,13 @@ public class ModuleWrapper {
             meth.invoke(module, null);
         }
 
+        loadAndSaveConfiguration();
+
+        module = null;
+        enabled = false;
+    }
+
+    private void loadAndSaveConfiguration() throws ClassNotFoundException, IllegalAccessException, IOException {
         for(Field field : module.getClass().getFields()) {
             if(field.isAnnotationPresent(ModuleConfiguration.class)) {
                 File config = new File(getOwner().getConfigurationDirectory(), getAnnotation().moduleName() + ".conf");
@@ -113,9 +114,6 @@ public class ModuleWrapper {
                 configLoader.save((ConfigurationNode) field.get(module));
             }
         }
-
-        module = null;
-        enabled = false;
     }
 
     public ModuleController getOwner() {
