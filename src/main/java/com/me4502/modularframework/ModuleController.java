@@ -43,7 +43,7 @@ public class ModuleController {
 
     File configurationDirectory;
 
-    private Set<ModuleWrapper> moduleSet = new HashSet<ModuleWrapper>();
+    private Set<ModuleWrapper> moduleSet = new HashSet<>();
 
     /**
      * Constructs a new ModuleController.
@@ -106,17 +106,7 @@ public class ModuleController {
         for(ModuleWrapper wrapper : moduleSet) {
             try {
                 wrapper.enableModule();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (IllegalAccessException | InstantiationException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IOException e) {
                 e.printStackTrace();
             }
         }
@@ -127,48 +117,26 @@ public class ModuleController {
      * @param modulePredicate The predicate to test if a module is enabled
      */
     public void enableModules(Predicate<ModuleWrapper> modulePredicate) {
-        for(ModuleWrapper wrapper : moduleSet) {
-            if (modulePredicate.apply(wrapper)) {
-                try {
-                    wrapper.enableModule();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        moduleSet.stream().filter(modulePredicate::apply).forEach(wrapper -> {
+            try {
+                wrapper.enableModule();
+            } catch (IllegalAccessException | InstantiationException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IOException e) {
+                e.printStackTrace();
             }
-        }
+        });
     }
 
     /**
      * Disable all registered modules in this controller.
      */
     public void disableModules() {
-        for(ModuleWrapper wrapper : moduleSet) {
-            if(wrapper.isEnabled()) {
-                try {
-                    wrapper.disableModule();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        moduleSet.stream().filter(ModuleWrapper::isEnabled).forEach(wrapper -> {
+            try {
+                wrapper.disableModule();
+            } catch (IllegalAccessException | IOException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        }
+        });
     }
 
     /**
@@ -176,24 +144,12 @@ public class ModuleController {
      * @param modulePredicate The predicate to test if a module is disabled
      */
     public void disableModules(Predicate<ModuleWrapper> modulePredicate) {
-        for(ModuleWrapper wrapper : moduleSet) {
-            if(wrapper.isEnabled()) {
-                if (modulePredicate.apply(wrapper)) {
-                    try {
-                        wrapper.disableModule();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (NoSuchMethodException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+        moduleSet.stream().filter(ModuleWrapper::isEnabled).filter(modulePredicate::apply).forEach(wrapper -> {
+            try {
+                wrapper.disableModule();
+            } catch (IllegalAccessException | IOException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        }
+        });
     }
 }
