@@ -1,4 +1,4 @@
-def versionNumber = '1.1.5'
+def versionNumber = '1.2'
 
 group = 'com.me4502'
 version = versionNumber + '-SNAPSHOT'
