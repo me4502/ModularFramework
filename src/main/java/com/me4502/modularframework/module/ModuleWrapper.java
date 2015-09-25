@@ -81,7 +81,7 @@ public class ModuleWrapper {
         this.module = injector.getInstance(getModuleClass());
 
         if(getAnnotation().eventListener())
-            owner.getGame().getEventManager().register(owner.getPlugin(), module);
+            owner.getGame().getEventManager().registerListeners(owner.getPlugin(), module);
 
         if(!getAnnotation().onEnable().equals("")) {
             Method meth = module.getClass().getMethod(getAnnotation().onEnable());
