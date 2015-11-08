@@ -110,6 +110,8 @@ public class ModuleWrapper {
         for(Field field : module.getClass().getFields()) {
             if(field.isAnnotationPresent(ModuleConfiguration.class)) {
                 File config = new File(getOwner().getConfigurationDirectory(), getAnnotation().moduleName() + ".conf");
+                if(!config.exists())
+                    config.createNewFile();
                 ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setFile(config).build();
                 configLoader.save((ConfigurationNode) field.get(module));
             }
