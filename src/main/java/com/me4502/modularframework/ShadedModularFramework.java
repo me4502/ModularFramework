@@ -14,7 +14,7 @@ public class ShadedModularFramework {
     /**
      * Internal list of Module Controllers.
      */
-    protected static List<ModuleController> controllerList = new ArrayList<ModuleController>();
+    protected static List<ModuleController> controllerList = new ArrayList<>();
 
     /**
      * Register a new Module Controller.

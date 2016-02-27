@@ -43,9 +43,9 @@ import java.lang.reflect.Method;
  */
 public class ModuleWrapper {
 
-    ModuleController owner;
+    final ModuleController owner;
 
-    String moduleClassName;
+    final String moduleClassName;
     Class<?> moduleClass;
     Object module;
 
@@ -83,9 +83,9 @@ public class ModuleWrapper {
         if(getAnnotation().eventListener())
             owner.getGame().getEventManager().registerListeners(owner.getPlugin(), module);
 
-        if(!getAnnotation().onEnable().equals("")) {
+        if(!getAnnotation().onEnable().isEmpty()) {
             Method meth = module.getClass().getMethod(getAnnotation().onEnable());
-            meth.invoke(module, null);
+            meth.invoke(module);
         }
 
         loadAndSaveConfiguration();
@@ -95,9 +95,9 @@ public class ModuleWrapper {
 
     public void disableModule() throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, IOException {
 
-        if(!getAnnotation().onDisable().equals("")) {
+        if(!getAnnotation().onDisable().isEmpty()) {
             Method meth = module.getClass().getMethod(getAnnotation().onDisable());
-            meth.invoke(module, null);
+            meth.invoke(module);
         }
 
         loadAndSaveConfiguration();
@@ -109,7 +109,7 @@ public class ModuleWrapper {
     private void loadAndSaveConfiguration() throws ClassNotFoundException, IllegalAccessException, IOException {
         for(Field field : module.getClass().getFields()) {
             if(field.isAnnotationPresent(ModuleConfiguration.class)) {
-                File config = new File(getOwner().getConfigurationDirectory(), getAnnotation().moduleName() + ".conf");
+                File config = new File(this.owner.getConfigurationDirectory(), getAnnotation().moduleName() + ".conf");
                 if(!config.exists())
                     config.createNewFile();
                 ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setFile(config).build();

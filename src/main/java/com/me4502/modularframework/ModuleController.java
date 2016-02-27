@@ -21,7 +21,6 @@
  */
 package com.me4502.modularframework;
 
-import com.google.common.base.Predicate;
 import com.me4502.modularframework.module.Module;
 import com.me4502.modularframework.module.ModuleWrapper;
 import org.spongepowered.api.Game;
@@ -34,19 +33,20 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * A per-plugin class for managing registered modules.
  */
 public class ModuleController {
 
-    Object plugin;
-    Game game;
+    final Object plugin;
+    final Game game;
 
     File configurationDirectory;
     ConfigurationOptions configurationOptions;
 
-    private Set<ModuleWrapper> moduleSet = new HashSet<>();
+    private final Set<ModuleWrapper> moduleSet = new HashSet<>();
 
     /**
      * Constructs a new ModuleController.
@@ -128,7 +128,7 @@ public class ModuleController {
      * @param modulePredicate The predicate to test if a module is enabled
      */
     public void enableModules(Predicate<ModuleWrapper> modulePredicate) {
-        moduleSet.stream().filter(modulePredicate::apply).forEach(wrapper -> {
+        moduleSet.stream().filter(modulePredicate::test).forEach(wrapper -> {
             try {
                 wrapper.enableModule();
             } catch (IllegalAccessException | InstantiationException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IOException e) {
@@ -155,7 +155,7 @@ public class ModuleController {
      * @param modulePredicate The predicate to test if a module is disabled
      */
     public void disableModules(Predicate<ModuleWrapper> modulePredicate) {
-        moduleSet.stream().filter(ModuleWrapper::isEnabled).filter(modulePredicate::apply).forEach(wrapper -> {
+        moduleSet.stream().filter(ModuleWrapper::isEnabled).filter(modulePredicate::test).forEach(wrapper -> {
             try {
                 wrapper.disableModule();
             } catch (IllegalAccessException | IOException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
