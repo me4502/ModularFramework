@@ -6,7 +6,7 @@ A modular plugin framework built for Sponge.
 * Lazy-loading of classes, unused modules are not loaded.
 
 ## Prerequisites
-* [Java] 6
+* [Java] 8
 * Sponge
 
 ## Building
