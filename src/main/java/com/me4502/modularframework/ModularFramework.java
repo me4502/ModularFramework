@@ -34,7 +34,7 @@ public class ModularFramework {
     /**
      * Internal list of Module Controllers.
      */
-    protected static List<ModuleController> controllerList = new ArrayList<>();
+    protected static final List<ModuleController> controllerList = new ArrayList<>();
 
     /**
      * Register a new Module Controller.
