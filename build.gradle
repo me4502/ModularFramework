@@ -8,7 +8,7 @@ plugins {
     id "com.jfrog.bintray" version "1.6"
 }
 
-def versionNumber = '1.3.2'
+def versionNumber = '1.3.3'
 
 group = 'com.me4502'
 version = versionNumber + '-SNAPSHOT'

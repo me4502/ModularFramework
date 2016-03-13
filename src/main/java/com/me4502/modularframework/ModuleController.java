@@ -23,15 +23,15 @@ package com.me4502.modularframework;
 
 import com.me4502.modularframework.module.Module;
 import com.me4502.modularframework.module.ModuleWrapper;
-import org.spongepowered.api.Game;
-
 import ninja.leaping.configurate.ConfigurationOptions;
+import org.spongepowered.api.Game;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -108,6 +108,24 @@ public class ModuleController {
      */
     public Set<ModuleWrapper> getModules() {
         return Collections.unmodifiableSet(moduleSet);
+    }
+
+    /**
+     * Gets the {@link ModuleWrapper} of the specified class, if it exists.
+     *
+     * @param clazz The class of the {@link Module}
+     * @return The {@link ModuleWrapper}, if it exists
+     */
+    public Optional<ModuleWrapper> getModule(Class<?> clazz) {
+        for(ModuleWrapper wrapper : moduleSet) {
+            try {
+                if(clazz.isInstance(wrapper.getModuleClass().getClass()))
+                    return Optional.of(wrapper);
+            } catch (ClassNotFoundException ignored) {
+            }
+        }
+
+        return Optional.empty();
     }
 
     /**
