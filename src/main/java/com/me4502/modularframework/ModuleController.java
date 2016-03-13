@@ -31,7 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -46,7 +46,7 @@ public class ModuleController {
     File configurationDirectory;
     ConfigurationOptions configurationOptions;
 
-    private final Set<ModuleWrapper> moduleSet = new HashSet<>();
+    private final Set<ModuleWrapper> moduleSet = new LinkedHashSet<>();
 
     /**
      * Constructs a new ModuleController.
