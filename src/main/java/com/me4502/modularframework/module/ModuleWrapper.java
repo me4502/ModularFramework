@@ -63,7 +63,7 @@ public class ModuleWrapper {
         this.moduleClass = moduleClass;
     }
 
-    private Class<?> getModuleClass() throws ClassNotFoundException {
+    public Class<?> getModuleClass() throws ClassNotFoundException {
         if(moduleClass == null) {
             moduleClass = Class.forName(moduleClassName);
             if(!moduleClass.isAnnotationPresent(Module.class))
