@@ -40,11 +40,11 @@ import java.util.function.Predicate;
  */
 public class ModuleController {
 
-    final Object plugin;
-    final Game game;
+    private final Object plugin;
+    private final Game game;
 
-    File configurationDirectory;
-    ConfigurationOptions configurationOptions;
+    private File configurationDirectory;
+    private ConfigurationOptions configurationOptions;
 
     private final Set<ModuleWrapper> moduleSet = new LinkedHashSet<>();
 
@@ -146,7 +146,7 @@ public class ModuleController {
      * @param modulePredicate The predicate to test if a module is enabled
      */
     public void enableModules(Predicate<ModuleWrapper> modulePredicate) {
-        moduleSet.stream().filter(modulePredicate::test).forEach(wrapper -> {
+        moduleSet.stream().filter(modulePredicate).forEach(wrapper -> {
             try {
                 wrapper.enableModule();
             } catch (IllegalAccessException | InstantiationException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IOException e) {
@@ -173,7 +173,7 @@ public class ModuleController {
      * @param modulePredicate The predicate to test if a module is disabled
      */
     public void disableModules(Predicate<ModuleWrapper> modulePredicate) {
-        moduleSet.stream().filter(ModuleWrapper::isEnabled).filter(modulePredicate::test).forEach(wrapper -> {
+        moduleSet.stream().filter(ModuleWrapper::isEnabled).filter(modulePredicate).forEach(wrapper -> {
             try {
                 wrapper.disableModule();
             } catch (IllegalAccessException | IOException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
