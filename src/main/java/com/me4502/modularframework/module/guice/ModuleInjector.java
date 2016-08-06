@@ -34,10 +34,10 @@ import java.io.IOException;
 
 public class ModuleInjector extends AbstractModule {
 
-    private ModuleWrapper moduleWrapper;
+    private static ModuleWrapper moduleWrapper;
 
     public ModuleInjector(ModuleWrapper moduleWrapper) {
-        this.moduleWrapper = moduleWrapper;
+        ModuleInjector.moduleWrapper = moduleWrapper;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ModuleInjector extends AbstractModule {
         bind(ConfigurationNode.class).annotatedWith(ModuleConfiguration.class).toProvider(ConfigurationProvider.class);
     }
 
-    private class ConfigurationProvider implements Provider<ConfigurationNode> {
+    private static class ConfigurationProvider implements Provider<ConfigurationNode> {
 
         @Override
         public ConfigurationNode get() {
