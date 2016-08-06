@@ -25,6 +25,7 @@ import org.spongepowered.api.Game;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,7 +36,7 @@ public class ShadedModularFramework {
     /**
      * Internal list of Module Controllers.
      */
-    protected static List<ModuleController> controllerList = new ArrayList<>();
+    private static List<ModuleController> controllerList = new ArrayList<>();
 
     /**
      * Register a new Module Controller.
@@ -57,5 +58,24 @@ public class ShadedModularFramework {
         ModuleController controller =  new ModuleController(plugin, game);
         controllerList.add(controller);
         return controller;
+    }
+
+    /**
+     * Gets an immutable list of all {@link ModuleController}s.
+     *
+     * @return The immutable list
+     */
+    public static List<ModuleController> getModuleControllers() {
+        return Collections.unmodifiableList(controllerList);
+    }
+
+    /**
+     * Unregisters a {@link ModuleController}.
+     *
+     * @param controller The controller to unregister
+     */
+    public static void unregisterModuleController(ModuleController controller) {
+        controller.disableModules();
+        controllerList.remove(controller);
     }
 }
