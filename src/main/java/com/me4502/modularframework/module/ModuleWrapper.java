@@ -43,11 +43,11 @@ import java.lang.reflect.Method;
  */
 public class ModuleWrapper {
 
-    final ModuleController owner;
+    private final ModuleController owner;
 
-    final String moduleClassName;
-    Class<?> moduleClass;
-    Object module;
+    private final String moduleClassName;
+    private Class<?> moduleClass;
+    private Object module;
 
     private boolean enabled = false;
 
