@@ -113,6 +113,9 @@ public class ModuleWrapper {
                 if(!config.exists())
                     config.createNewFile();
                 ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setFile(config).build();
+                if (this.owner.isOverrideConfigurationNode()) {
+                    field.set(module, configLoader.load(this.owner.getConfigurationOptions()));
+                }
                 configLoader.save((ConfigurationNode) field.get(module));
             }
         }
