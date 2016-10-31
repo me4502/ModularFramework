@@ -45,6 +45,7 @@ public class ModuleController {
 
     private File configurationDirectory;
     private ConfigurationOptions configurationOptions;
+    private boolean overrideConfigurationNode = false;
 
     private final Set<ModuleWrapper> moduleSet = new LinkedHashSet<>();
 
@@ -72,6 +73,14 @@ public class ModuleController {
 
     public ConfigurationOptions getConfigurationOptions() {
         return this.configurationOptions == null ? ConfigurationOptions.defaults() : this.configurationOptions;
+    }
+
+    public boolean isOverrideConfigurationNode() {
+        return this.overrideConfigurationNode;
+    }
+
+    public void setOverrideConfigurationNode(boolean overrideConfigurationNode) {
+        this.overrideConfigurationNode = overrideConfigurationNode;
     }
 
     public Object getPlugin() {
