@@ -49,13 +49,13 @@ public @interface Module {
      * The version of this module.
      * @return The version of this module
      */
-    String moduleVersion();
+    String moduleVersion() default "1.0.0";
 
     /**
      * The authors of this module.
      * @return The authors of this module
      */
-    String[] moduleAuthors();
+    String[] moduleAuthors() default {};
 
     /**
      * Whether the module requires an event listener registration.

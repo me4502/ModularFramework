@@ -41,6 +41,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Wraps a {@link Module} in a tangible object.
@@ -145,7 +146,7 @@ public class ModuleWrapper {
             e.printStackTrace();
         }
 
-        return moduleClassName;
+        return moduleClassName.toLowerCase();
     }
 
     public String getName() {
@@ -158,32 +159,24 @@ public class ModuleWrapper {
         return moduleClassName;
     }
 
-    public String getVersion() {
+    public Optional<String> getVersion() {
         try {
-            return getAnnotation().moduleVersion();
+            return Optional.of(getAnnotation().moduleVersion());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
-        if(Sponge.getPluginManager().fromInstance(owner.getPlugin()).isPresent()) {
-            return Sponge.getPluginManager().fromInstance(owner.getPlugin()).get().getVersion().orElse("unknown");
-        } else {
-            return "unknown";
-        }
+        return Optional.empty();
     }
 
-    public List<String> getAuthors() {
+    public Optional<List<String>> getAuthors() {
         try {
-            return Arrays.asList(getAnnotation().moduleAuthors());
+            return Optional.of(Arrays.asList(getAnnotation().moduleAuthors()));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
-        if(Sponge.getPluginManager().fromInstance(owner.getPlugin()).isPresent()) {
-            return Sponge.getPluginManager().fromInstance(owner.getPlugin()).get().getAuthors();
-        } else {
-            return Collections.singletonList("unknown");
-        }
+        return Optional.empty();
     }
 
     public Module getAnnotation() throws ClassNotFoundException {
