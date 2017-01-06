@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2016 Me4502 (Matthew Miller)
+ * Copyright (c) 2015-2017 Me4502 (Matthew Miller)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -131,6 +131,22 @@ public class ModuleController {
                 if(clazz.isInstance(wrapper.getModuleClass().getClass()))
                     return Optional.of(wrapper);
             } catch (ClassNotFoundException ignored) {
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    /**
+     * Gets the {@link ModuleWrapper} by its id, if it exists.
+     *
+     * @param moduleId The id of the {@link Module}
+     * @return The {@link ModuleWrapper}, if it exists
+     */
+    public Optional<ModuleWrapper> getModule(String moduleId) {
+        for(ModuleWrapper wrapper : moduleSet) {
+            if(wrapper.getId().equals(moduleId)) {
+                return Optional.of(wrapper);
             }
         }
 

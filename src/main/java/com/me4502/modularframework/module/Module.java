@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2016 Me4502 (Matthew Miller)
+ * Copyright (c) 2015-2017 Me4502 (Matthew Miller)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,10 +34,28 @@ import java.lang.annotation.Target;
 public @interface Module {
 
     /**
+     * The id of this module.
+     * @return The id of this module
+     */
+    String moduleId();
+
+    /**
      * The name of this module.
      * @return The name of this module
      */
     String moduleName();
+
+    /**
+     * The version of this module.
+     * @return The version of this module
+     */
+    String moduleVersion();
+
+    /**
+     * The authors of this module.
+     * @return The authors of this module
+     */
+    String[] moduleAuthors();
 
     /**
      * Whether the module requires an event listener registration.
