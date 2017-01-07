@@ -146,37 +146,40 @@ public class ModuleWrapper {
             e.printStackTrace();
         }
 
-        return moduleClassName.toLowerCase();
+        return null;
     }
 
     public String getName() {
         try {
+            if(getAnnotation().moduleName().equals("")) {
+                return getId();
+            }
             return getAnnotation().moduleName();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
-        return moduleClassName;
+        return null;
     }
 
-    public Optional<String> getVersion() {
+    public String getVersion() {
         try {
-            return Optional.of(getAnnotation().moduleVersion());
+            return getAnnotation().moduleVersion();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
-        return Optional.empty();
+        return null;
     }
 
-    public Optional<List<String>> getAuthors() {
+    public List<String> getAuthors() {
         try {
-            return Optional.of(Arrays.asList(getAnnotation().moduleAuthors()));
+            return Arrays.asList(getAnnotation().moduleAuthors());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
-        return Optional.empty();
+        return null;
     }
 
     public Module getAnnotation() throws ClassNotFoundException {

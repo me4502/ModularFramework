@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
 public @interface Module {
 
     /**
-     * The id of this module.
+     * The id of this module. This is required.
      * @return The id of this module
      */
     String moduleId();
@@ -43,7 +43,7 @@ public @interface Module {
      * The name of this module.
      * @return The name of this module
      */
-    String moduleName();
+    String moduleName() default "";
 
     /**
      * The version of this module.
