@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2016 Me4502 (Matthew Miller)
+ * Copyright (c) 2015-2017 Me4502 (Matthew Miller)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,12 +31,17 @@ import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import org.spongepowered.api.Sponge;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Wraps a {@link Module} in a tangible object.
@@ -134,14 +139,47 @@ public class ModuleWrapper {
     //Cache the annotation. I have no idea what the performance overhead for not doing this is, but meh.
     private Module annotation;
 
+    public String getId() {
+        try {
+            return getAnnotation().moduleId();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public String getName() {
         try {
+            if(getAnnotation().moduleName().equals("")) {
+                return getId();
+            }
             return getAnnotation().moduleName();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
-        return moduleClassName;
+        return null;
+    }
+
+    public String getVersion() {
+        try {
+            return getAnnotation().moduleVersion();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public List<String> getAuthors() {
+        try {
+            return Arrays.asList(getAnnotation().moduleAuthors());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public Module getAnnotation() throws ClassNotFoundException {
