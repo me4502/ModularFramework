@@ -144,13 +144,7 @@ public class ModuleController {
      * @return The {@link ModuleWrapper}, if it exists
      */
     public Optional<ModuleWrapper> getModule(String moduleId) {
-        for(ModuleWrapper wrapper : moduleSet) {
-            if(wrapper.getId().equals(moduleId)) {
-                return Optional.of(wrapper);
-            }
-        }
-
-        return Optional.empty();
+        return moduleSet.stream().filter(wrapper -> wrapper.getId().equals(moduleId)).findFirst();
     }
 
     /**
