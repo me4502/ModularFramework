@@ -31,7 +31,6 @@ import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
-import org.spongepowered.api.Sponge;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,9 +38,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Wraps a {@link Module} in a tangible object.
@@ -114,11 +111,15 @@ public class ModuleWrapper {
     private void loadAndSaveConfiguration() throws ClassNotFoundException, IllegalAccessException, IOException {
         for(Field field : module.getClass().getFields()) {
             if(field.isAnnotationPresent(ModuleConfiguration.class)) {
-                File config = new File(this.owner.getConfigurationDirectory(), getAnnotation().moduleName() + ".conf");
+                File legacyConfig = new File(this.owner.getConfigurationDirectory(), getAnnotation().name() + ".conf");
+                File config = new File(this.owner.getConfigurationDirectory(), getAnnotation().id() + ".conf");
+                if(!getAnnotation().name().equals(getAnnotation().id()) && legacyConfig.exists()) {
+                    legacyConfig.renameTo(config);
+                }
                 if(!config.exists())
                     config.createNewFile();
                 ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setFile(config).build();
-                if (this.owner.isOverrideConfigurationNode()) {
+                if(this.owner.isOverrideConfigurationNode()) {
                     field.set(module, configLoader.load(this.owner.getConfigurationOptions()));
                 }
                 configLoader.save((ConfigurationNode) field.get(module));
@@ -141,7 +142,7 @@ public class ModuleWrapper {
 
     public String getId() {
         try {
-            return getAnnotation().moduleId();
+            return getAnnotation().id();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -151,10 +152,10 @@ public class ModuleWrapper {
 
     public String getName() {
         try {
-            if(getAnnotation().moduleName().equals("")) {
+            if(getAnnotation().name().equals("")) {
                 return getId();
             }
-            return getAnnotation().moduleName();
+            return getAnnotation().name();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -164,7 +165,7 @@ public class ModuleWrapper {
 
     public String getVersion() {
         try {
-            return getAnnotation().moduleVersion();
+            return getAnnotation().version();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -174,7 +175,7 @@ public class ModuleWrapper {
 
     public List<String> getAuthors() {
         try {
-            return Arrays.asList(getAnnotation().moduleAuthors());
+            return Arrays.asList(getAnnotation().authors());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
