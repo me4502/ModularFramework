@@ -37,25 +37,25 @@ public @interface Module {
      * The id of this module. This is required.
      * @return The id of this module
      */
-    String moduleId();
+    String id();
 
     /**
      * The name of this module.
      * @return The name of this module
      */
-    String moduleName() default "";
+    String name() default "";
 
     /**
      * The version of this module.
      * @return The version of this module
      */
-    String moduleVersion() default "1.0.0";
+    String version() default "1.0.0";
 
     /**
      * The authors of this module.
      * @return The authors of this module
      */
-    String[] moduleAuthors() default {};
+    String[] authors() default {};
 
     /**
      * Whether the module requires an event listener registration.
