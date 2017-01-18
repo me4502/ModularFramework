@@ -53,12 +53,16 @@ public class ModuleInjector extends AbstractModule {
 
             if(moduleWrapper.getOwner().getConfigurationDirectory() != null) {
                 try {
-                    File config = new File(moduleWrapper.getOwner().getConfigurationDirectory(), moduleWrapper.getAnnotation().moduleName() + ".conf");
+                    File legacyConfig = new File(moduleWrapper.getOwner().getConfigurationDirectory(), moduleWrapper.getName() + ".conf");
+                    File config = new File(moduleWrapper.getOwner().getConfigurationDirectory(), moduleWrapper.getId()+ ".conf");
+                    if(!moduleWrapper.getName().equals(moduleWrapper.getId()) && legacyConfig.exists()) {
+                        legacyConfig.renameTo(config);
+                    }
                     if(!config.exists())
                         config.createNewFile();
                     ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setFile(config).build();
                     configNode = configLoader.load(moduleWrapper.getOwner().getConfigurationOptions());
-                } catch (ClassNotFoundException | IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
