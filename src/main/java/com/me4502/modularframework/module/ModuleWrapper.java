@@ -111,8 +111,8 @@ public class ModuleWrapper {
     private void loadAndSaveConfiguration() throws ClassNotFoundException, IllegalAccessException, IOException {
         for(Field field : module.getClass().getFields()) {
             if(field.isAnnotationPresent(ModuleConfiguration.class)) {
-                File legacyConfig = new File(this.owner.getConfigurationDirectory(), getAnnotation().name() + ".conf");
-                File config = new File(this.owner.getConfigurationDirectory(), getAnnotation().id() + ".conf");
+                File legacyConfig = new File(this.owner.getConfigurationDirectory(), getName() + ".conf");
+                File config = new File(this.owner.getConfigurationDirectory(), getId() + ".conf");
                 if(!getAnnotation().name().equals(getAnnotation().id()) && legacyConfig.exists()) {
                     legacyConfig.renameTo(config);
                 }
@@ -142,7 +142,7 @@ public class ModuleWrapper {
 
     public String getId() {
         try {
-            return getAnnotation().id();
+            return getAnnotation().id().toLowerCase();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
