@@ -7,9 +7,10 @@ plugins {
     id "signing"
     id "com.github.hierynomus.license" version "0.12.1"
     id "com.jfrog.bintray" version "1.6"
+    id 'org.spongepowered.plugin' version '0.8.1'
 }
 
-def versionNumber = '1.6'
+def versionNumber = '1.7'
 
 group = 'com.me4502'
 version = versionNumber + '-SNAPSHOT'
