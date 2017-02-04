@@ -42,7 +42,16 @@ public class ModuleInjector extends AbstractModule {
 
     @Override
     protected void configure() {
+        bind(Object.class).annotatedWith(PluginInstance.class).toProvider(PluginProvider.class);
         bind(ConfigurationNode.class).annotatedWith(ModuleConfiguration.class).toProvider(ConfigurationProvider.class);
+    }
+
+    private static class PluginProvider implements Provider<Object> {
+
+        @Override
+        public Object get() {
+            return moduleWrapper.getOwner().getPlugin();
+        }
     }
 
     private static class ConfigurationProvider implements Provider<ConfigurationNode> {
