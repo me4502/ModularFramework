@@ -25,6 +25,7 @@ import com.me4502.modularframework.module.Module;
 import com.me4502.modularframework.module.ModuleWrapper;
 import ninja.leaping.configurate.ConfigurationOptions;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.plugin.PluginContainer;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +44,7 @@ public class ModuleController {
     private final Object plugin;
     private final Game game;
 
+    private PluginContainer pluginContainer;
     private File configurationDirectory;
     private ConfigurationOptions configurationOptions;
     private boolean overrideConfigurationNode = false;
@@ -57,6 +59,14 @@ public class ModuleController {
     ModuleController(Object plugin, Game game) {
         this.plugin = plugin;
         this.game = game;
+    }
+
+    public void setPluginContainer(PluginContainer pluginContainer) {
+        this.pluginContainer = pluginContainer;
+    }
+
+    public PluginContainer getPluginContainer() {
+        return this.pluginContainer;
     }
 
     public void setConfigurationDirectory(File configurationDirectory) {
