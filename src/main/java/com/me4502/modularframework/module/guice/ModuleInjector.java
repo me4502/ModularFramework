@@ -28,6 +28,7 @@ import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import org.spongepowered.api.plugin.PluginContainer;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +43,16 @@ public class ModuleInjector extends AbstractModule {
 
     @Override
     protected void configure() {
+        bind(PluginContainer.class).annotatedWith(ModuleContainer.class).toProvider(ContainerProvider.class);
         bind(ConfigurationNode.class).annotatedWith(ModuleConfiguration.class).toProvider(ConfigurationProvider.class);
+    }
+
+    private static class ContainerProvider implements Provider<PluginContainer> {
+
+        @Override
+        public PluginContainer get() {
+            return moduleWrapper.getOwner().getPluginContainer();
+        }
     }
 
     private static class ConfigurationProvider implements Provider<ConfigurationNode> {
