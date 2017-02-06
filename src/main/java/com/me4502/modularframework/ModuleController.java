@@ -49,7 +49,7 @@ public class ModuleController<T> {
     private ConfigurationOptions configurationOptions;
     private boolean overrideConfigurationNode = false;
 
-    private final Set<ModuleWrapper<?>> moduleSet = new LinkedHashSet<>();
+    private final Set<ModuleWrapper> moduleSet = new LinkedHashSet<>();
 
     /**
      * Constructs a new ModuleController.
@@ -125,7 +125,7 @@ public class ModuleController<T> {
      * Gets an immutable set of all registered modules in this controller.
      * @return A set of registered modules
      */
-    public Set<ModuleWrapper<?>> getModules() {
+    public Set<ModuleWrapper> getModules() {
         return Collections.unmodifiableSet(moduleSet);
     }
 
@@ -153,7 +153,7 @@ public class ModuleController<T> {
      * @param moduleId The id of the {@link Module}
      * @return The {@link ModuleWrapper}, if it exists
      */
-    public Optional<ModuleWrapper<?>> getModule(String moduleId) {
+    public Optional<ModuleWrapper> getModule(String moduleId) {
         return moduleSet.stream().filter(wrapper -> wrapper.getId().equals(moduleId)).findFirst();
     }
 
