@@ -45,7 +45,7 @@ public class ShadedModularFramework {
      * @param game The game.
      * @return The newly registered ModuleController.
      */
-    public static ModuleController registerModuleController(Object plugin, Game game) {
+    public static <T> ModuleController registerModuleController(T plugin, Game game) {
         //If a real copy is installed, use that over this one.
         try {
             Class clazz = Class.forName("com.me4502.modularframework.ModularFramework");
@@ -55,7 +55,7 @@ public class ShadedModularFramework {
             e.printStackTrace();
         }
 
-        ModuleController controller =  new ModuleController(plugin, game);
+        ModuleController controller =  new ModuleController<>(plugin, game);
         controllerList.add(controller);
         return controller;
     }
