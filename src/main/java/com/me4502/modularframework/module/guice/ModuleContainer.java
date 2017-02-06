@@ -31,5 +31,5 @@ import java.lang.annotation.Target;
 @BindingAnnotation
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface PluginInstance {
+public @interface ModuleContainer {
 }
