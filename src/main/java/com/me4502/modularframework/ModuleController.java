@@ -39,9 +39,9 @@ import java.util.function.Predicate;
 /**
  * A per-plugin class for managing registered modules.
  */
-public class ModuleController {
+public class ModuleController<T> {
 
-    private final Object plugin;
+    private final T plugin;
     private final Game game;
 
     private PluginContainer pluginContainer;
@@ -49,14 +49,14 @@ public class ModuleController {
     private ConfigurationOptions configurationOptions;
     private boolean overrideConfigurationNode = false;
 
-    private final Set<ModuleWrapper> moduleSet = new LinkedHashSet<>();
+    private final Set<ModuleWrapper<?>> moduleSet = new LinkedHashSet<>();
 
     /**
      * Constructs a new ModuleController.
      *
      * @param plugin The plugin instance.
      */
-    ModuleController(Object plugin, Game game) {
+    ModuleController(T plugin, Game game) {
         this.plugin = plugin;
         this.game = game;
     }
@@ -93,12 +93,12 @@ public class ModuleController {
         this.overrideConfigurationNode = overrideConfigurationNode;
     }
 
-    public Object getPlugin() {
-        return plugin;
+    public T getPlugin() {
+        return this.plugin;
     }
 
     public Game getGame() {
-        return game;
+        return this.game;
     }
 
     /**
@@ -110,7 +110,7 @@ public class ModuleController {
         if(!clazz.isAnnotationPresent(Module.class))
             throw new IllegalArgumentException("Passed class is not a Module!");
 
-        moduleSet.add(new ModuleWrapper(this, clazz));
+        moduleSet.add(new ModuleWrapper<>(this, clazz));
     }
 
     /**
@@ -125,7 +125,7 @@ public class ModuleController {
      * Gets an immutable set of all registered modules in this controller.
      * @return A set of registered modules
      */
-    public Set<ModuleWrapper> getModules() {
+    public Set<ModuleWrapper<?>> getModules() {
         return Collections.unmodifiableSet(moduleSet);
     }
 
@@ -135,7 +135,7 @@ public class ModuleController {
      * @param clazz The class of the {@link Module}
      * @return The {@link ModuleWrapper}, if it exists
      */
-    public Optional<ModuleWrapper> getModule(Class<?> clazz) {
+    public <M> Optional<ModuleWrapper<M>> getModule(Class<M> clazz) {
         for(ModuleWrapper wrapper : moduleSet) {
             try {
                 if(clazz.isInstance(wrapper.getModuleClass().getClass()))
@@ -153,7 +153,7 @@ public class ModuleController {
      * @param moduleId The id of the {@link Module}
      * @return The {@link ModuleWrapper}, if it exists
      */
-    public Optional<ModuleWrapper> getModule(String moduleId) {
+    public Optional<ModuleWrapper<?>> getModule(String moduleId) {
         return moduleSet.stream().filter(wrapper -> wrapper.getId().equals(moduleId)).findFirst();
     }
 

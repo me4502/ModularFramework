@@ -39,17 +39,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Wraps a {@link Module} in a tangible object.
  */
-public class ModuleWrapper {
+public class ModuleWrapper<T> {
 
     private final ModuleController owner;
 
     private final String moduleClassName;
-    private Class<?> moduleClass;
-    private Object module;
+    private Class<T> moduleClass;
+    private T module;
 
     private boolean enabled = false;
 
@@ -59,15 +60,15 @@ public class ModuleWrapper {
     }
 
     @Deprecated
-    public ModuleWrapper(ModuleController owner, Class moduleClass) {
+    public ModuleWrapper(ModuleController owner, Class<T> moduleClass) {
         this.owner = owner;
         this.moduleClassName = moduleClass.getName();
         this.moduleClass = moduleClass;
     }
 
-    public Class<?> getModuleClass() throws ClassNotFoundException {
+    public Class<T> getModuleClass() throws ClassNotFoundException {
         if(moduleClass == null) {
-            moduleClass = Class.forName(moduleClassName);
+            moduleClass = (Class<T>) Class.forName(moduleClassName);
             if(!moduleClass.isAnnotationPresent(Module.class))
                 throw new IllegalArgumentException("Module " + moduleClassName + " is not a module!");
         }
@@ -131,7 +132,16 @@ public class ModuleWrapper {
         return this.owner;
     }
 
-    public Object getModule() throws ModuleNotInstantiatedException {
+    /**
+     * Gets the module object, if it exists.
+     *
+     * @return The module object
+     */
+    public Optional<T> getModule() {
+        return Optional.ofNullable(this.module);
+    }
+
+    public T getModuleUnchecked() throws ModuleNotInstantiatedException {
         if(this.module == null)
             throw new ModuleNotInstantiatedException();
         return this.module;
@@ -152,7 +162,7 @@ public class ModuleWrapper {
 
     public String getName() {
         try {
-            if(getAnnotation().name().equals("")) {
+            if(getAnnotation().name().isEmpty()) {
                 return getId();
             }
             return getAnnotation().name();
