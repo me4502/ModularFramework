@@ -44,8 +44,8 @@ public class ModularFramework {
      * @param game The game.
      * @return The newly registered ModuleController.
      */
-    public static <T> ModuleController registerModuleController(T plugin, Game game) {
-        ModuleController controller = new ModuleController<>(plugin, game);
+    public static <T> ModuleController<T> registerModuleController(T plugin, Game game) {
+        ModuleController<T> controller = new ModuleController<>(plugin, game);
         controllerList.add(controller);
         return controller;
     }
