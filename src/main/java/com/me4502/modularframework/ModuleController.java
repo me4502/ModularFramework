@@ -25,6 +25,7 @@ import com.me4502.modularframework.module.Module;
 import com.me4502.modularframework.module.ModuleWrapper;
 import ninja.leaping.configurate.ConfigurationOptions;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.GameState;
 import org.spongepowered.api.plugin.PluginContainer;
 
 import java.io.File;
@@ -119,6 +120,15 @@ public class ModuleController<T> {
      */
     public void registerModule(String className) {
         moduleSet.add(new ModuleWrapper(this, className));
+    }
+
+    /**
+     * Register a class to be a module with a load state.
+     * @param className The name of the class to use.
+     * @param loadState The state to load the module.
+     */
+    public void registerModule(String className, GameState loadState) {
+        moduleSet.add(new ModuleWrapper(this, className, loadState));
     }
 
     /**

@@ -31,6 +31,7 @@ import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import org.spongepowered.api.GameState;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,11 +53,18 @@ public class ModuleWrapper<T> {
     private Class<T> moduleClass;
     private T module;
 
+    private GameState loadState;
+
     private boolean enabled = false;
 
     public ModuleWrapper(ModuleController owner, String moduleClassName) {
+        this(owner, moduleClassName, GameState.SERVER_STARTED);
+    }
+
+    public ModuleWrapper(ModuleController owner, String moduleClassName, GameState loadState) {
         this.owner = owner;
         this.moduleClassName = moduleClassName;
+        this.loadState = loadState;
     }
 
     @Deprecated
@@ -73,6 +81,10 @@ public class ModuleWrapper<T> {
                 throw new IllegalArgumentException("Module " + moduleClassName + " is not a module!");
         }
         return moduleClass;
+    }
+
+    public GameState getLoadState() {
+        return this.loadState;
     }
 
     public boolean isEnabled() {
