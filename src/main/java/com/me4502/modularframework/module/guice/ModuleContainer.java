@@ -30,6 +30,6 @@ import java.lang.annotation.Target;
 
 @BindingAnnotation
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 public @interface ModuleContainer {
 }
