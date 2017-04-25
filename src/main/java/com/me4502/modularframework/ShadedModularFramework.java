@@ -43,6 +43,7 @@ public class ShadedModularFramework {
      *
      * @param plugin The plugin object to register with.
      * @param game The game.
+     * @param <T> The plugin type.
      * @return The newly registered ModuleController.
      */
     public static <T> ModuleController<T> registerModuleController(T plugin, Game game) {

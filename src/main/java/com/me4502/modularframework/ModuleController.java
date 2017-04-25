@@ -143,6 +143,7 @@ public class ModuleController<T> {
      * Gets the {@link ModuleWrapper} of the specified class, if it exists.
      *
      * @param clazz The class of the {@link Module}
+     * @param <M> The module type.
      * @return The {@link ModuleWrapper}, if it exists
      */
     public <M> Optional<ModuleWrapper<M>> getModule(Class<M> clazz) {
