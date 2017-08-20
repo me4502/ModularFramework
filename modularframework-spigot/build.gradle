@@ -1,0 +1,38 @@
+plugins {
+//    id "tech.ferus.gradle.spigotgradle" version "1.0.5"
+    id 'com.github.johnrengelman.shadow' version '2.0.0'
+}
+
+repositories {
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+}
+
+dependencies {
+    compile 'org.spigotmc:spigot-api:1.12-R0.1-SNAPSHOT'
+    compile 'com.google.inject:guice:4.0'
+}
+
+//spigot {
+//    meta {
+//        name = project.name
+//        version = project.version
+//        description = "A module loading system."
+//        main = "tld.domain.myplugin.MyPlugin"
+//        author = "me4502"
+//        authors = ["me4502"]
+//    }
+//}
+
+shadowJar {
+  classifier = 'dist'
+  exclude 'docs'
+  exclude 'GradleStart**'
+  exclude '.cache'
+  exclude 'LICENSE*'
+
+  dependencies {
+    include(dependency('com.google.inject:guice'))
+  }
+}
+
+build.dependsOn(shadowJar)
