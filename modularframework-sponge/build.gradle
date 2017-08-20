@@ -1,0 +1,41 @@
+plugins {
+    id 'org.spongepowered.plugin' version '0.8.1'
+}
+
+repositories {
+    maven { url "http://repo.spongepowered.org/maven/" }
+}
+
+dependencies {
+    compileOnly 'org.spongepowered:spongeapi:6.0.0-SNAPSHOT'
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            artifact sourceJar
+            artifact javadocJar
+            groupId 'com.me4502'
+            artifactId 'modularframework'
+            version versionNumber
+        }
+    }
+}
+
+bintray {
+    user = System.getProperty('BINTRAY_USER')
+    key = System.getProperty('BINTRAY_KEY')
+    publications = ['MyPublication']
+    pkg {
+        repo = 'maven'
+        name = 'modularframework'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/me4502/ModularFramework.git'
+        publicDownloadNumbers = true
+        version {
+            name = 'modularframework-sponge-' + versionNumber
+            desc = name
+        }
+    }
+}

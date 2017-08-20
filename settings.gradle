@@ -1,2 +1,4 @@
-rootProject.name = 'ModularFramework'
+rootProject.name = 'modularframework'
+
+include 'modularframework-sponge', 'modularframework-spigot'
 
