@@ -7,91 +7,71 @@ plugins {
     id "signing"
     id "com.github.hierynomus.license" version "0.12.1"
     id "com.jfrog.bintray" version "1.7.3"
-    id 'org.spongepowered.plugin' version '0.8.1'
 }
 
-def versionNumber = '1.8.5'
+defaultTasks 'licenseFormat', 'build'
 
-group = 'com.me4502'
-version = versionNumber + '-SNAPSHOT'
+allprojects {
+    project.ext.versionNumber = '1.8.5'
 
-sourceCompatibility = 1.8
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
-    maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url "http://repo.spongepowered.org/maven/" }
+    group = 'com.me4502'
+    version = project.ext.versionNumber + '-SNAPSHOT'
 }
 
-dependencies {
-    compile 'org.spongepowered:spongeapi:6.0.0-SNAPSHOT'
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-}
+subprojects {
+    apply plugin: "java"
+    apply plugin: "maven"
+    apply plugin: "maven-publish"
+    apply plugin: "signing"
+    apply plugin: "com.github.hierynomus.license"
+    apply plugin: "com.jfrog.bintray"
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
+    sourceCompatibility = 1.8
 
-task sourceJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives sourceJar
-    archives javadocJar
-}
-
-signing {
-    required false
-    sign configurations.archives
-}
-
-license {
-    ext {
-        year = Calendar.getInstance().get(Calendar.YEAR)
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
 
-    header = file('HEADER.txt')
-    include '**/*.java'
-
-    ignoreFailures = false
-    strictCheck = true
-
-    mapping {
-        java = 'SLASHSTAR_STYLE'
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.11'
     }
-}
 
-publishing {
-    publications {
-        MyPublication(MavenPublication) {
-            from components.java
-            artifact sourceJar
-            artifact javadocJar
-            groupId 'com.me4502'
-            artifactId 'ModularFramework'
-            version versionNumber
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    task sourceJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives sourceJar
+        archives javadocJar
+    }
+
+    signing {
+        required false
+        sign configurations.archives
+    }
+
+    license {
+        ext {
+            year = Calendar.getInstance().get(Calendar.YEAR)
         }
-    }
-}
 
-bintray {
-    user = System.getProperty('BINTRAY_USER')
-    key = System.getProperty('BINTRAY_KEY')
-    publications = ['MyPublication']
-    pkg {
-        repo = 'maven'
-        name = 'ModularFramework'
-        licenses = ['MIT']
-        vcsUrl = 'https://github.com/me4502/ModularFramework.git'
-        publicDownloadNumbers = true
-        version {
-            name = 'ModularFramework-' + versionNumber
-            desc = name
+        header = file('../HEADER.txt')
+        include '**/*.java'
+
+        ignoreFailures = false
+        strictCheck = true
+
+        mapping {
+            java = 'SLASHSTAR_STYLE'
         }
     }
 }
