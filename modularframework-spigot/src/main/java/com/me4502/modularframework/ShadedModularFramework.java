@@ -21,5 +21,62 @@
  */
 package com.me4502.modularframework;
 
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Wrapper class to call main functions from when used via Maven/Gradle shading.
+ */
 public class ShadedModularFramework {
+
+    /**
+     * Internal list of Module Controllers.
+     */
+    private static List<ModuleController> controllerList = new ArrayList<>();
+
+    /**
+     * Register a new Module Controller.
+     *
+     * @param plugin The plugin object to register with.
+     * @param <T> The plugin type.
+     * @return The newly registered ModuleController.
+     */
+    public static <T extends JavaPlugin> ModuleController<T> registerModuleController(T plugin) {
+        //If a real copy is installed, use that over this one.
+        try {
+            Class clazz = Class.forName("com.me4502.modularframework.ModularFramework");
+            return (ModuleController) clazz.getMethod("registerModuleController").invoke(null, plugin);
+        } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        ModuleController<T> controller =  new ModuleController<>(plugin);
+        controllerList.add(controller);
+        return controller;
+    }
+
+    /**
+     * Gets an immutable list of all {@link ModuleController}s.
+     *
+     * @return The immutable list
+     */
+    public static List<ModuleController> getModuleControllers() {
+        return Collections.unmodifiableList(controllerList);
+    }
+
+    /**
+     * Unregisters a {@link ModuleController}.
+     *
+     * @param controller The controller to unregister
+     */
+    public static void unregisterModuleController(ModuleController controller) {
+        controller.disableModules();
+        controllerList.remove(controller);
+    }
+
 }
