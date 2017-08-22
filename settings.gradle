@@ -1,4 +1,4 @@
 rootProject.name = 'modularframework'
 
-include 'modularframework-sponge', 'modularframework-spigot'
+include 'modularframework-core', 'modularframework-sponge', 'modularframework-spigot'
 

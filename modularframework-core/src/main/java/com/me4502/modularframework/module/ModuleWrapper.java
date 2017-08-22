@@ -21,86 +21,46 @@
  */
 package com.me4502.modularframework.module;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.me4502.modularframework.ModuleController;
-import com.me4502.modularframework.exception.ModuleNotInstantiatedException;
-import com.me4502.modularframework.module.guice.ModuleInjector;
-import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class ModuleWrapper<T> {
+/**
+ * Wraps a {@link Module} in a tangible object.
+ */
+public abstract class ModuleWrapper<T> {
 
     private final ModuleController owner;
-
     private final String moduleClassName;
-    private Class<T> moduleClass;
-    private T module;
 
-    private boolean enabled = false;
+    private Class<T> moduleClass;
+    private Module annotation;
 
     public ModuleWrapper(ModuleController owner, String moduleClassName) {
         this.owner = owner;
         this.moduleClassName = moduleClassName;
     }
 
-    @Deprecated
-    public ModuleWrapper(ModuleController owner, Class<T> moduleClass) {
+    public ModuleWrapper(ModuleController owner, Class<T> clazz) {
         this.owner = owner;
-        this.moduleClassName = moduleClass.getName();
-        this.moduleClass = moduleClass;
+        this.moduleClassName = clazz.getName();
+        this.moduleClass = clazz;
     }
 
     public Class<T> getModuleClass() throws ClassNotFoundException {
-        if(moduleClass == null) {
-            moduleClass = (Class<T>) Class.forName(moduleClassName);
-            if(!moduleClass.isAssignableFrom(Listener.class))
-                throw new ClassCastException("Module " + moduleClassName + " is not a listener!");
-            if(!moduleClass.isAnnotationPresent(Module.class))
+        if(this.moduleClass == null) {
+            this.moduleClass = (Class<T>) Class.forName(this.moduleClassName);
+            if(!this.moduleClass.isAnnotationPresent(Module.class))
                 throw new IllegalArgumentException("Module " + moduleClassName + " is not a module!");
         }
-        return moduleClass;
+        return this.moduleClass;
     }
 
-    public boolean isEnabled() {
-        return this.enabled;
-    }
-
-    public void enableModule() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IOException {
-        Injector injector = Guice.createInjector(new ModuleInjector(this));
-        this.module = injector.getInstance(getModuleClass());
-
-        if(getAnnotation().eventListener())
-            Bukkit.getPluginManager().registerEvents((Listener) module, owner.getPlugin());
-
-        if(!getAnnotation().onEnable().isEmpty()) {
-            Method meth = module.getClass().getMethod(getAnnotation().onEnable());
-            meth.invoke(module);
-        }
-
-        enabled = true;
-    }
-
-    public void disableModule() throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, IOException {
-
-        if(!getAnnotation().onDisable().isEmpty()) {
-            Method meth = module.getClass().getMethod(getAnnotation().onDisable());
-            meth.invoke(module);
-        }
-
-        module = null;
-        enabled = false;
-    }
+    public abstract boolean isEnabled();
 
     public ModuleController getOwner() {
         return this.owner;
@@ -111,18 +71,19 @@ public class ModuleWrapper<T> {
      *
      * @return The module object
      */
-    public Optional<T> getModule() {
-        return Optional.ofNullable(this.module);
-    }
+    public abstract Optional<T> getModule();
 
-    public T getModuleUnchecked() throws ModuleNotInstantiatedException {
-        if(this.module == null)
-            throw new ModuleNotInstantiatedException();
-        return this.module;
-    }
+    public abstract void enableModule() throws IllegalAccessException, InstantiationException, ClassNotFoundException,
+            NoSuchMethodException, InvocationTargetException, IOException;
 
-    //Cache the annotation. I have no idea what the performance overhead for not doing this is, but meh.
-    private Module annotation;
+    public abstract void disableModule() throws IllegalAccessException, ClassNotFoundException, NoSuchMethodException,
+            InvocationTargetException, IOException;
+
+    public Module getAnnotation() throws ClassNotFoundException {
+        if (this.annotation == null)
+            this.annotation = this.getModuleClass().getAnnotation(Module.class);
+        return this.annotation;
+    }
 
     public String getId() {
         try {
@@ -165,12 +126,6 @@ public class ModuleWrapper<T> {
         }
 
         return null;
-    }
-
-    public Module getAnnotation() throws ClassNotFoundException {
-        if(annotation == null)
-            annotation = getModuleClass().getAnnotation(Module.class);
-        return annotation;
     }
 
 }

@@ -23,13 +23,13 @@ package com.me4502.modularframework.module.guice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
-import com.me4502.modularframework.module.ModuleWrapper;
+import com.me4502.modularframework.module.BukkitModuleWrapper;
 
 public class ModuleInjector extends AbstractModule {
 
-    private static ModuleWrapper moduleWrapper;
+    private static BukkitModuleWrapper moduleWrapper;
 
-    public ModuleInjector(ModuleWrapper moduleWrapper) {
+    public ModuleInjector(BukkitModuleWrapper moduleWrapper) {
         ModuleInjector.moduleWrapper = moduleWrapper;
     }
 

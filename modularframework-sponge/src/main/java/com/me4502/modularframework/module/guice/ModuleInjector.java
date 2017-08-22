@@ -23,7 +23,8 @@ package com.me4502.modularframework.module.guice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
-import com.me4502.modularframework.module.ModuleWrapper;
+import com.me4502.modularframework.SpongeModuleController;
+import com.me4502.modularframework.module.SpongeModuleWrapper;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -35,9 +36,9 @@ import java.io.IOException;
 
 public class ModuleInjector extends AbstractModule {
 
-    private static ModuleWrapper moduleWrapper;
+    private static SpongeModuleWrapper moduleWrapper;
 
-    public ModuleInjector(ModuleWrapper moduleWrapper) {
+    public ModuleInjector(SpongeModuleWrapper moduleWrapper) {
         ModuleInjector.moduleWrapper = moduleWrapper;
     }
 
@@ -51,7 +52,7 @@ public class ModuleInjector extends AbstractModule {
 
         @Override
         public PluginContainer get() {
-            return moduleWrapper.getOwner().getPluginContainer();
+            return ((SpongeModuleController) moduleWrapper.getOwner()).getPluginContainer();
         }
     }
 
@@ -61,17 +62,17 @@ public class ModuleInjector extends AbstractModule {
         public ConfigurationNode get() {
             ConfigurationNode configNode = null;
 
-            if(moduleWrapper.getOwner().getConfigurationDirectory() != null) {
+            if(((SpongeModuleController) moduleWrapper.getOwner()).getConfigurationDirectory() != null) {
                 try {
-                    File legacyConfig = new File(moduleWrapper.getOwner().getConfigurationDirectory(), moduleWrapper.getName() + ".conf");
-                    File config = new File(moduleWrapper.getOwner().getConfigurationDirectory(), moduleWrapper.getId()+ ".conf");
+                    File legacyConfig = new File(((SpongeModuleController) moduleWrapper.getOwner()).getConfigurationDirectory(), moduleWrapper.getName() + ".conf");
+                    File config = new File(((SpongeModuleController) moduleWrapper.getOwner()).getConfigurationDirectory(), moduleWrapper.getId()+ ".conf");
                     if(!moduleWrapper.getName().equals(moduleWrapper.getId()) && legacyConfig.exists()) {
                         legacyConfig.renameTo(config);
                     }
                     if(!config.exists())
                         config.createNewFile();
                     ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setFile(config).build();
-                    configNode = configLoader.load(moduleWrapper.getOwner().getConfigurationOptions());
+                    configNode = configLoader.load(((SpongeModuleController) moduleWrapper.getOwner()).getConfigurationOptions());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

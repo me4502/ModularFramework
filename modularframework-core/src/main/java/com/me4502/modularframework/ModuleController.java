@@ -23,9 +23,7 @@ package com.me4502.modularframework;
 
 import com.me4502.modularframework.module.Module;
 import com.me4502.modularframework.module.ModuleWrapper;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
@@ -34,27 +32,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-/**
- * A per-plugin class for managing registered modules.
- */
-public class ModuleController<T extends JavaPlugin> {
+public abstract class ModuleController<T> {
 
     private final T plugin;
-    private File configurationDirectory;
-    private boolean overrideConfigurationNode = false;
 
-    private final Set<ModuleWrapper> moduleSet = new LinkedHashSet<>();
+    public final Set<ModuleWrapper> moduleSet = new LinkedHashSet<>();
 
-    ModuleController(T plugin) {
+    public ModuleController(T plugin) {
         this.plugin = plugin;
-    }
-
-    public void setConfigurationDirectory(File configurationDirectory) {
-        this.configurationDirectory = configurationDirectory;
-    }
-
-    public File getConfigurationDirectory() {
-        return this.configurationDirectory;
     }
 
     public T getPlugin() {
@@ -66,28 +51,20 @@ public class ModuleController<T extends JavaPlugin> {
      * @param clazz The class containing the module.
      */
     @Deprecated
-    public void registerModule(Class<?> clazz) {
-        if(!clazz.isAnnotationPresent(Module.class))
-            throw new IllegalArgumentException("Passed class is not a Module!");
-
-        moduleSet.add(new ModuleWrapper<>(this, clazz));
-    }
+    public abstract void registerModule(Class<?> clazz);
 
     /**
      * Register a class to be a module.
      * @param className The name of the class to use.
      */
-    public void registerModule(String className) {
-        moduleSet.add(new ModuleWrapper(this, className));
-    }
-
+    public abstract void registerModule(String className);
 
     /**
      * Gets an immutable set of all registered modules in this controller.
      * @return A set of registered modules
      */
     public Set<ModuleWrapper> getModules() {
-        return Collections.unmodifiableSet(moduleSet);
+        return Collections.unmodifiableSet(this.moduleSet);
     }
 
     /**
@@ -98,7 +75,7 @@ public class ModuleController<T extends JavaPlugin> {
      * @return The {@link ModuleWrapper}, if it exists
      */
     public <M> Optional<ModuleWrapper<M>> getModule(Class<M> clazz) {
-        for(ModuleWrapper wrapper : moduleSet) {
+        for(ModuleWrapper wrapper : this.moduleSet) {
             try {
                 if(clazz.isInstance(wrapper.getModuleClass().getClass()))
                     return Optional.of(wrapper);
@@ -116,7 +93,7 @@ public class ModuleController<T extends JavaPlugin> {
      * @return The {@link ModuleWrapper}, if it exists
      */
     public Optional<ModuleWrapper> getModule(String moduleId) {
-        return moduleSet.stream().filter(wrapper -> wrapper.getId().equals(moduleId)).findFirst();
+        return this.moduleSet.stream().filter(wrapper -> wrapper.getId().equals(moduleId)).findFirst();
     }
 
     /**
@@ -172,4 +149,5 @@ public class ModuleController<T extends JavaPlugin> {
             }
         });
     }
+
 }

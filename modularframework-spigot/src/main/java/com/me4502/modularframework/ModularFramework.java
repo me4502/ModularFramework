@@ -35,36 +35,36 @@ public class ModularFramework extends JavaPlugin {
     /**
      * Internal list of Module Controllers.
      */
-    private static final List<ModuleController> controllerList = new ArrayList<>();
+    private static final List<BukkitModuleController> controllerList = new ArrayList<>();
 
     /**
      * Register a new Module Controller.
      *
      * @param plugin The plugin object to register with.
      * @param <T> The plugin type.
-     * @return The newly registered ModuleController.
+     * @return The newly registered BukkitModuleController.
      */
-    public static <T extends JavaPlugin> ModuleController<T> registerModuleController(T plugin) {
-        ModuleController<T> controller = new ModuleController<>(plugin);
+    public static <T> BukkitModuleController<T> registerModuleController(T plugin) {
+        BukkitModuleController<T> controller = new BukkitModuleController<>(plugin);
         controllerList.add(controller);
         return controller;
     }
 
     /**
-     * Gets an immutable list of all {@link ModuleController}s.
+     * Gets an immutable list of all {@link BukkitModuleController}s.
      *
      * @return The immutable list
      */
-    public static List<ModuleController> getModuleControllers() {
+    public static List<BukkitModuleController> getModuleControllers() {
         return Collections.unmodifiableList(controllerList);
     }
 
     /**
-     * Unregisters a {@link ModuleController}.
+     * Unregisters a {@link BukkitModuleController}.
      *
      * @param controller The controller to unregister
      */
-    public static void unregisterModuleController(ModuleController controller) {
+    public static void unregisterModuleController(BukkitModuleController controller) {
         controller.disableModules();
         controllerList.remove(controller);
     }

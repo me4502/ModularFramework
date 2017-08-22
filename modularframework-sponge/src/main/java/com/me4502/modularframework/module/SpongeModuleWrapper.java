@@ -23,7 +23,7 @@ package com.me4502.modularframework.module;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.me4502.modularframework.ModuleController;
+import com.me4502.modularframework.SpongeModuleController;
 import com.me4502.modularframework.exception.ModuleNotInstantiatedException;
 import com.me4502.modularframework.module.guice.ModuleConfiguration;
 import com.me4502.modularframework.module.guice.ModuleInjector;
@@ -45,42 +45,25 @@ import java.util.Optional;
 /**
  * Wraps a {@link Module} in a tangible object.
  */
-public class ModuleWrapper<T> {
+public class SpongeModuleWrapper<T> extends ModuleWrapper<T> {
 
-    private final ModuleController owner;
-
-    private final String moduleClassName;
-    private Class<T> moduleClass;
     private T module;
-
     private GameState loadState;
 
     private boolean enabled = false;
 
-    public ModuleWrapper(ModuleController owner, String moduleClassName) {
+    public SpongeModuleWrapper(SpongeModuleController owner, String moduleClassName) {
         this(owner, moduleClassName, GameState.SERVER_STARTED);
     }
 
-    public ModuleWrapper(ModuleController owner, String moduleClassName, GameState loadState) {
-        this.owner = owner;
-        this.moduleClassName = moduleClassName;
+    public SpongeModuleWrapper(SpongeModuleController owner, String moduleClassName, GameState loadState) {
+        super(owner, moduleClassName);
         this.loadState = loadState;
     }
 
     @Deprecated
-    public ModuleWrapper(ModuleController owner, Class<T> moduleClass) {
-        this.owner = owner;
-        this.moduleClassName = moduleClass.getName();
-        this.moduleClass = moduleClass;
-    }
-
-    public Class<T> getModuleClass() throws ClassNotFoundException {
-        if(moduleClass == null) {
-            moduleClass = (Class<T>) Class.forName(moduleClassName);
-            if(!moduleClass.isAnnotationPresent(Module.class))
-                throw new IllegalArgumentException("Module " + moduleClassName + " is not a module!");
-        }
-        return moduleClass;
+    public SpongeModuleWrapper(SpongeModuleController owner, Class<T> moduleClass) {
+        super(owner, moduleClass);
     }
 
     public GameState getLoadState() {
@@ -96,52 +79,48 @@ public class ModuleWrapper<T> {
         this.module = injector.getInstance(getModuleClass());
 
         if(getAnnotation().eventListener())
-            owner.getGame().getEventManager().registerListeners(owner.getPlugin(), module);
+            ((SpongeModuleController<T>) this.getOwner()).getGame().getEventManager().registerListeners(((SpongeModuleController<T>) this.getOwner()).getPlugin(), module);
 
         if(!getAnnotation().onEnable().isEmpty()) {
-            Method meth = module.getClass().getMethod(getAnnotation().onEnable());
-            meth.invoke(module);
+            Method meth = this.module.getClass().getMethod(getAnnotation().onEnable());
+            meth.invoke(this.module);
         }
 
         loadAndSaveConfiguration();
 
-        enabled = true;
+        this.enabled = true;
     }
 
     public void disableModule() throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, IOException {
 
         if(!getAnnotation().onDisable().isEmpty()) {
-            Method meth = module.getClass().getMethod(getAnnotation().onDisable());
-            meth.invoke(module);
+            Method meth = this.module.getClass().getMethod(getAnnotation().onDisable());
+            meth.invoke(this.module);
         }
 
         loadAndSaveConfiguration();
 
-        module = null;
-        enabled = false;
+        this.module = null;
+        this.enabled = false;
     }
 
     private void loadAndSaveConfiguration() throws ClassNotFoundException, IllegalAccessException, IOException {
         for(Field field : module.getClass().getFields()) {
             if(field.isAnnotationPresent(ModuleConfiguration.class)) {
-                File legacyConfig = new File(this.owner.getConfigurationDirectory(), getName() + ".conf");
-                File config = new File(this.owner.getConfigurationDirectory(), getId() + ".conf");
+                File legacyConfig = new File(((SpongeModuleController<T>) this.getOwner()).getConfigurationDirectory(), getName() + ".conf");
+                File config = new File(((SpongeModuleController<T>) this.getOwner()).getConfigurationDirectory(), getId() + ".conf");
                 if(!getAnnotation().name().equals(getAnnotation().id()) && legacyConfig.exists()) {
                     legacyConfig.renameTo(config);
                 }
                 if(!config.exists())
                     config.createNewFile();
                 ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setFile(config).build();
-                if(this.owner.isOverrideConfigurationNode()) {
-                    field.set(module, configLoader.load(this.owner.getConfigurationOptions()));
+                if(((SpongeModuleController<T>) this.getOwner()).isOverrideConfigurationNode()) {
+                    field.set(module, configLoader.load(((SpongeModuleController<T>) this.getOwner()).getConfigurationOptions()));
                 }
                 configLoader.save((ConfigurationNode) field.get(module));
             }
         }
-    }
-
-    public ModuleController getOwner() {
-        return this.owner;
     }
 
     /**
@@ -159,55 +138,4 @@ public class ModuleWrapper<T> {
         return this.module;
     }
 
-    //Cache the annotation. I have no idea what the performance overhead for not doing this is, but meh.
-    private Module annotation;
-
-    public String getId() {
-        try {
-            return getAnnotation().id().toLowerCase();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public String getName() {
-        try {
-            if(getAnnotation().name().isEmpty()) {
-                return getId();
-            }
-            return getAnnotation().name();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public String getVersion() {
-        try {
-            return getAnnotation().version();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public List<String> getAuthors() {
-        try {
-            return Arrays.asList(getAnnotation().authors());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public Module getAnnotation() throws ClassNotFoundException {
-        if(annotation == null)
-            annotation = getModuleClass().getAnnotation(Module.class);
-        return annotation;
-    }
 }
