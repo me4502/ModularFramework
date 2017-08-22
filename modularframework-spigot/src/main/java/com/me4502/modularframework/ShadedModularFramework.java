@@ -36,45 +36,45 @@ public class ShadedModularFramework {
     /**
      * Internal list of Module Controllers.
      */
-    private static List<ModuleController> controllerList = new ArrayList<>();
+    private static List<BukkitModuleController> controllerList = new ArrayList<>();
 
     /**
      * Register a new Module Controller.
      *
      * @param plugin The plugin object to register with.
      * @param <T> The plugin type.
-     * @return The newly registered ModuleController.
+     * @return The newly registered BukkitModuleController.
      */
-    public static <T extends JavaPlugin> ModuleController<T> registerModuleController(T plugin) {
+    public static <T extends JavaPlugin> BukkitModuleController<T> registerModuleController(T plugin) {
         //If a real copy is installed, use that over this one.
         try {
             Class clazz = Class.forName("com.me4502.modularframework.ModularFramework");
-            return (ModuleController) clazz.getMethod("registerModuleController").invoke(null, plugin);
+            return (BukkitModuleController) clazz.getMethod("registerModuleController").invoke(null, plugin);
         } catch (ClassNotFoundException | NoSuchMethodException ignored) {
         } catch (InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
 
-        ModuleController<T> controller =  new ModuleController<>(plugin);
+        BukkitModuleController<T> controller =  new BukkitModuleController<>(plugin);
         controllerList.add(controller);
         return controller;
     }
 
     /**
-     * Gets an immutable list of all {@link ModuleController}s.
+     * Gets an immutable list of all {@link BukkitModuleController}s.
      *
      * @return The immutable list
      */
-    public static List<ModuleController> getModuleControllers() {
+    public static List<BukkitModuleController> getModuleControllers() {
         return Collections.unmodifiableList(controllerList);
     }
 
     /**
-     * Unregisters a {@link ModuleController}.
+     * Unregisters a {@link BukkitModuleController}.
      *
      * @param controller The controller to unregister
      */
-    public static void unregisterModuleController(ModuleController controller) {
+    public static void unregisterModuleController(BukkitModuleController controller) {
         controller.disableModules();
         controllerList.remove(controller);
     }
