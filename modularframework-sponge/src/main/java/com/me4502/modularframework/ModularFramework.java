@@ -35,7 +35,7 @@ public class ModularFramework {
     /**
      * Internal list of Module Controllers.
      */
-    private static final List<ModuleController> controllerList = new ArrayList<>();
+    private static final List<SpongeModuleController> controllerList = new ArrayList<>();
 
     /**
      * Register a new Module Controller.
@@ -43,29 +43,29 @@ public class ModularFramework {
      * @param plugin The plugin object to register with.
      * @param game The game.
      * @param <T> The plugin type.
-     * @return The newly registered ModuleController.
+     * @return The newly registered SpongeModuleController.
      */
-    public static <T> ModuleController<T> registerModuleController(T plugin, Game game) {
-        ModuleController<T> controller = new ModuleController<>(plugin, game);
+    public static <T> SpongeModuleController<T> registerModuleController(T plugin, Game game) {
+        SpongeModuleController<T> controller = new SpongeModuleController<>(plugin, game);
         controllerList.add(controller);
         return controller;
     }
 
     /**
-     * Gets an immutable list of all {@link ModuleController}s.
+     * Gets an immutable list of all {@link SpongeModuleController}s.
      *
      * @return The immutable list
      */
-    public static List<ModuleController> getModuleControllers() {
+    public static List<SpongeModuleController> getModuleControllers() {
         return Collections.unmodifiableList(controllerList);
     }
 
     /**
-     * Unregisters a {@link ModuleController}.
+     * Unregisters a {@link SpongeModuleController}.
      *
      * @param controller The controller to unregister
      */
-    public static void unregisterModuleController(ModuleController controller) {
+    public static void unregisterModuleController(SpongeModuleController controller) {
         controller.disableModules();
         controllerList.remove(controller);
     }

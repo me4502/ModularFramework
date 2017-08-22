@@ -8,6 +8,7 @@ repositories {
 }
 
 dependencies {
+    compile project(':modularframework-core')
     compile 'org.spigotmc:spigot-api:1.12-R0.1-SNAPSHOT'
     compile 'com.google.inject:guice:4.0'
 }
