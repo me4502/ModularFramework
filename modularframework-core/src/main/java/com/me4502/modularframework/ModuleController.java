@@ -32,12 +32,20 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+/**
+ * A per-plugin class for managing registered modules.
+ */
 public abstract class ModuleController<T> {
 
     private final T plugin;
 
     public final Set<ModuleWrapper> moduleSet = new LinkedHashSet<>();
 
+    /**
+     * Constructs a new ModuleController.
+     *
+     * @param plugin The plugin instance.
+     */
     public ModuleController(T plugin) {
         this.plugin = plugin;
     }
