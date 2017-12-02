@@ -12,7 +12,7 @@ plugins {
 defaultTasks 'licenseFormat', 'build'
 
 allprojects {
-    project.ext.versionNumber = '1.9.0'
+    project.ext.versionNumber = '1.9.1'
 
     group = 'com.me4502'
     version = project.ext.versionNumber + '-SNAPSHOT'

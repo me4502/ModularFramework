@@ -1,3 +1,33 @@
 dependencies {
     compile 'com.google.inject:guice:4.0'
 }
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            artifact sourceJar
+            artifact javadocJar
+            groupId 'com.me4502'
+            artifactId 'modularframework-core'
+            version versionNumber
+        }
+    }
+}
+
+bintray {
+    user = System.getProperty('BINTRAY_USER')
+    key = System.getProperty('BINTRAY_KEY')
+    publications = ['MyPublication']
+    pkg {
+        repo = 'maven'
+        name = 'modularframework-core'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/me4502/ModularFramework.git'
+        publicDownloadNumbers = true
+        version {
+            name = 'modularframework-core-' + versionNumber
+            desc = name
+        }
+    }
+}

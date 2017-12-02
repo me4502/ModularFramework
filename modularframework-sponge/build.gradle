@@ -18,7 +18,7 @@ publishing {
             artifact sourceJar
             artifact javadocJar
             groupId 'com.me4502'
-            artifactId 'modularframework'
+            artifactId 'modularframework-sponge'
             version versionNumber
         }
     }
@@ -30,7 +30,7 @@ bintray {
     publications = ['MyPublication']
     pkg {
         repo = 'maven'
-        name = 'modularframework'
+        name = 'modularframework-sponge'
         licenses = ['MIT']
         vcsUrl = 'https://github.com/me4502/ModularFramework.git'
         publicDownloadNumbers = true
