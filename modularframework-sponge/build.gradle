@@ -8,7 +8,7 @@ repositories {
 
 dependencies {
     compile project(':modularframework-core')
-    compileOnly 'org.spongepowered:spongeapi:6.0.0-SNAPSHOT'
+    compileOnly 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
 }
 
 publishing {
