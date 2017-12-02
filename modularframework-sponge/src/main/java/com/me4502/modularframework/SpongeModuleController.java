@@ -44,8 +44,6 @@ public class SpongeModuleController<T> extends ModuleController<T> {
     private ConfigurationOptions configurationOptions;
     private boolean overrideConfigurationNode = false;
 
-    private final Set<SpongeModuleWrapper> moduleSet = new LinkedHashSet<>();
-
     /**
      * Constructs a new SpongeModuleController.
      *
