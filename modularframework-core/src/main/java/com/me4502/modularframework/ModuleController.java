@@ -21,6 +21,7 @@
  */
 package com.me4502.modularframework;
 
+import com.me4502.modularframework.exception.ModuleDisableException;
 import com.me4502.modularframework.module.Module;
 import com.me4502.modularframework.module.ModuleWrapper;
 
@@ -85,8 +86,9 @@ public abstract class ModuleController<T> {
     public <M> Optional<ModuleWrapper<M>> getModule(Class<M> clazz) {
         for(ModuleWrapper wrapper : this.moduleSet) {
             try {
-                if(clazz.isInstance(wrapper.getModuleClass().getClass()))
+                if(clazz.isInstance(wrapper.getModuleClass().getClass())) {
                     return Optional.of(wrapper);
+                }
             } catch (ClassNotFoundException ignored) {
             }
         }
@@ -108,13 +110,7 @@ public abstract class ModuleController<T> {
      * Enable all registered modules in this controller.
      */
     public void enableModules() {
-        for(ModuleWrapper wrapper : moduleSet) {
-            try {
-                wrapper.enableModule();
-            } catch (IllegalAccessException | InstantiationException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IOException e) {
-                e.printStackTrace();
-            }
-        }
+        enableModules(wrapper -> true);
     }
 
     /**
@@ -125,7 +121,8 @@ public abstract class ModuleController<T> {
         moduleSet.stream().filter(modulePredicate).forEach(wrapper -> {
             try {
                 wrapper.enableModule();
-            } catch (IllegalAccessException | InstantiationException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IOException e) {
+            } catch (Throwable e) {
+                e.addSuppressed(new ModuleDisableException("Failed to enable module " + wrapper.getName()));
                 e.printStackTrace();
             }
         });
@@ -135,13 +132,7 @@ public abstract class ModuleController<T> {
      * Disable all registered modules in this controller.
      */
     public void disableModules() {
-        moduleSet.stream().filter(ModuleWrapper::isEnabled).forEach(wrapper -> {
-            try {
-                wrapper.disableModule();
-            } catch (IllegalAccessException | IOException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        });
+        disableModules(wrapper -> true);
     }
 
     /**
@@ -152,7 +143,8 @@ public abstract class ModuleController<T> {
         moduleSet.stream().filter(ModuleWrapper::isEnabled).filter(modulePredicate).forEach(wrapper -> {
             try {
                 wrapper.disableModule();
-            } catch (IllegalAccessException | IOException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+            } catch (Throwable e) {
+                e.addSuppressed(new ModuleDisableException("Failed to disable module " + wrapper.getName()));
                 e.printStackTrace();
             }
         });
