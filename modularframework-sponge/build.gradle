@@ -11,6 +11,12 @@ dependencies {
     compileOnly 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
 }
 
+sponge {
+    plugin {
+        id = 'modularframework'
+    }
+}
+
 publishing {
     publications {
         MyPublication(MavenPublication) {
