@@ -22,6 +22,7 @@
 package com.me4502.modularframework;
 
 import com.me4502.modularframework.exception.ModuleDisableException;
+import com.me4502.modularframework.exception.ModuleEnableException;
 import com.me4502.modularframework.module.Module;
 import com.me4502.modularframework.module.ModuleWrapper;
 
@@ -122,7 +123,7 @@ public abstract class ModuleController<T> {
             try {
                 wrapper.enableModule();
             } catch (Throwable e) {
-                e.addSuppressed(new ModuleDisableException("Failed to enable module " + wrapper.getName()));
+                e.addSuppressed(new ModuleEnableException("Failed to enable module " + wrapper.getName()));
                 e.printStackTrace();
             }
         });
