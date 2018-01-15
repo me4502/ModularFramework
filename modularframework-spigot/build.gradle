@@ -37,3 +37,33 @@ shadowJar {
 }
 
 build.dependsOn(shadowJar)
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            artifact sourceJar
+            artifact javadocJar
+            groupId 'com.me4502'
+            artifactId 'modularframework-spigot'
+            version versionNumber
+        }
+    }
+}
+
+bintray {
+    user = System.getProperty('BINTRAY_USER')
+    key = System.getProperty('BINTRAY_KEY')
+    publications = ['MyPublication']
+    pkg {
+        repo = 'maven'
+        name = 'modularframework-spigot'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/me4502/ModularFramework.git'
+        publicDownloadNumbers = true
+        version {
+            name = 'modularframework-spigot-' + versionNumber
+            desc = name
+        }
+    }
+}
