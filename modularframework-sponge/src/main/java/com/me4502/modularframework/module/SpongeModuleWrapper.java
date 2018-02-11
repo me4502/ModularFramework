@@ -79,8 +79,9 @@ public class SpongeModuleWrapper<T> extends ModuleWrapper<T> {
         Injector injector = Guice.createInjector(new ModuleInjector(this));
         this.module = injector.getInstance(getModuleClass());
 
-        if(getAnnotation().eventListener())
+        if(getAnnotation().eventListener()) {
             ((SpongeModuleController<T>) this.getOwner()).getGame().getEventManager().registerListeners(((SpongeModuleController<T>) this.getOwner()).getPlugin(), module);
+        }
 
         if(!getAnnotation().onEnable().isEmpty()) {
             Method meth = this.module.getClass().getMethod(getAnnotation().onEnable());
@@ -93,6 +94,10 @@ public class SpongeModuleWrapper<T> extends ModuleWrapper<T> {
     }
 
     public void disableModule() throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, IOException {
+
+        if (getAnnotation().eventListener()) {
+            ((SpongeModuleController<T>) this.getOwner()).getGame().getEventManager().unregisterListeners(module);
+        }
 
         if(!getAnnotation().onDisable().isEmpty()) {
             Method meth = this.module.getClass().getMethod(getAnnotation().onDisable());
