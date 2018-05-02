@@ -50,6 +50,7 @@ public class SpongeModuleWrapper<T> extends ModuleWrapper<T> {
 
     private T module;
     private GameState loadState;
+    private ModuleInjector injectorModule;
 
     private boolean enabled = false;
 
@@ -67,6 +68,14 @@ public class SpongeModuleWrapper<T> extends ModuleWrapper<T> {
         super(owner, moduleClass);
     }
 
+    public void setInjectorModule(ModuleInjector injectorModule) {
+        this.injectorModule = injectorModule;
+    }
+
+    public ModuleInjector getInjectorModule() {
+        return this.injectorModule != null ? this.injectorModule : new ModuleInjector(this);
+    }
+
     public GameState getLoadState() {
         return this.loadState;
     }
@@ -75,12 +84,12 @@ public class SpongeModuleWrapper<T> extends ModuleWrapper<T> {
         return this.enabled;
     }
 
-    public void enableModule() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IOException {
-        Injector injector = Guice.createInjector(new ModuleInjector(this));
+    public void enableModule() throws IllegalAccessException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IOException {
+        Injector injector = Guice.createInjector(this.getInjectorModule());
         this.module = injector.getInstance(getModuleClass());
 
         if(getAnnotation().eventListener()) {
-            ((SpongeModuleController<T>) this.getOwner()).getGame().getEventManager().registerListeners(((SpongeModuleController<T>) this.getOwner()).getPlugin(), module);
+            ((SpongeModuleController<T>) this.getOwner()).getGame().getEventManager().registerListeners(((SpongeModuleController<T>) this.getOwner()).getPlugin(), this.module);
         }
 
         if(!getAnnotation().onEnable().isEmpty()) {
@@ -96,7 +105,7 @@ public class SpongeModuleWrapper<T> extends ModuleWrapper<T> {
     public void disableModule() throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, IOException {
 
         if (getAnnotation().eventListener()) {
-            ((SpongeModuleController<T>) this.getOwner()).getGame().getEventManager().unregisterListeners(module);
+            ((SpongeModuleController<T>) this.getOwner()).getGame().getEventManager().unregisterListeners(this.module);
         }
 
         if(!getAnnotation().onDisable().isEmpty()) {

@@ -41,8 +41,8 @@ import java.util.Optional;
 public class BukkitModuleWrapper<T> extends ModuleWrapper<T> {
 
     private T module;
-
     private boolean enabled = false;
+    private ModuleInjector injectorModule;
 
     public BukkitModuleWrapper(BukkitModuleController owner, String moduleClassName) {
         super(owner, moduleClassName);
@@ -53,12 +53,20 @@ public class BukkitModuleWrapper<T> extends ModuleWrapper<T> {
         super(owner, moduleClass);
     }
 
+    public void setInjectorModule(ModuleInjector injectorModule) {
+        this.injectorModule = injectorModule;
+    }
+
+    public ModuleInjector getInjectorModule() {
+        return this.injectorModule != null ? this.injectorModule : new ModuleInjector(this);
+    }
+
     public boolean isEnabled() {
         return this.enabled;
     }
 
-    public void enableModule() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IOException {
-        Injector injector = Guice.createInjector(new ModuleInjector(this));
+    public void enableModule() throws IllegalAccessException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
+        Injector injector = Guice.createInjector(this.getInjectorModule());
         this.module = injector.getInstance(getModuleClass());
 
         if(getAnnotation().eventListener())
@@ -72,7 +80,7 @@ public class BukkitModuleWrapper<T> extends ModuleWrapper<T> {
         this.enabled = true;
     }
 
-    public void disableModule() throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, IOException {
+    public void disableModule() throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException {
 
         if(!getAnnotation().onDisable().isEmpty()) {
             Method meth = this.module.getClass().getMethod(getAnnotation().onDisable());
