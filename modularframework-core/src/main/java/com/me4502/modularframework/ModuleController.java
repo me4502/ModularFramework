@@ -120,7 +120,7 @@ public abstract class ModuleController<T> {
      * @param modulePredicate The predicate to test if a module is enabled
      */
     public void enableModules(Predicate<ModuleWrapper> modulePredicate) {
-        moduleSet.stream().filter(modulePredicate).forEach(wrapper -> {
+        this.moduleSet.stream().filter(modulePredicate).forEach(wrapper -> {
             try {
                 wrapper.enableModule();
             } catch (Throwable e) {
@@ -142,7 +142,7 @@ public abstract class ModuleController<T> {
      * @param modulePredicate The predicate to test if a module is disabled
      */
     public void disableModules(Predicate<ModuleWrapper> modulePredicate) {
-        moduleSet.stream().filter(ModuleWrapper::isEnabled).filter(modulePredicate).forEach(wrapper -> {
+        this.moduleSet.stream().filter(ModuleWrapper::isEnabled).filter(modulePredicate).forEach(wrapper -> {
             try {
                 wrapper.disableModule();
             } catch (Throwable e) {
